@@ -1,0 +1,4 @@
+﻿.venv/
+corpus/train.jsonl
+corpus/val.jsonl
+__pycache__/

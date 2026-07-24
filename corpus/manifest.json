@@ -1,0 +1,43 @@
+{
+  "created": "2026-07-23",
+  "seed": 42,
+  "val_fraction": 0.05,
+  "totals": {
+    "train": 7928,
+    "val": 417
+  },
+  "sources": {
+    "local:seed_examples.jsonl": {
+      "kept": 8
+    },
+    "prometheus-eval/Feedback-Collection": {
+      "revision": "22a339f961c40b07261bea44ec10849c7440b75f",
+      "license": "cc-by-4.0",
+      "kept": 4000,
+      "scanned": 80001,
+      "valid": 80000
+    },
+    "openbmb/UltraFeedback": {
+      "revision": "40b436560ca83a8dba36114c22ab3c66e43f6d5e",
+      "license": "mit",
+      "kept": 2000,
+      "scanned": 40001,
+      "valid": 22141
+    },
+    "open-thoughts/OpenThoughts3-1.2M": {
+      "revision": "61bcf9d4eb38b30295efc2021227a63cc5bb34c8",
+      "license": "apache-2.0",
+      "kept": 337,
+      "scanned": 60001,
+      "valid": 1335
+    },
+    "allenai/tulu-3-sft-mixture": {
+      "revision": "b14afda60f1bbebe55d5d2fa1e4df5042f97f8be",
+      "license": "odc-by",
+      "kept": 2000,
+      "scanned": 40001,
+      "valid": 30014
+    }
+  },
+  "config_hash": "1c7d7affe9deb64e"
+}
