@@ -1,0 +1,23 @@
+{
+  "tag": "base-mistral",
+  "model": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+  "n": 40,
+  "verdict_rate": 1.0,
+  "structure_rate": 0.95,
+  "trap_detection_rate": 0.8,
+  "mean_score_3": 2.75,
+  "by_category_mean": {
+    "adversarial": 3.0,
+    "causal_chain": 3.0,
+    "counterfactual": 2.5,
+    "ethical_dilemma": 2.67,
+    "frontier_reasoning": 2.33,
+    "logical_syllogism": 2.75,
+    "mathematical_proof": 3.0,
+    "meta_reasoning": 2.67,
+    "probabilistic": 3.0,
+    "quantum_reasoning": 3.0,
+    "spatial_reasoning": 2.5,
+    "temporal_reasoning": 2.0
+  }
+}
