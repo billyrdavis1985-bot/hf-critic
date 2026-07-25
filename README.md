@@ -1,109 +1,92 @@
-# MTCA Research Program
+# hf-critic — Hudson Forge Reasoning Critic
 
-**Mixed-Tier Corpus Analysis** — studies of how frontier AI systems reason about non-propositional, identity-regulating, therapeutically-framed content. Part of the IRMB research program at Hudson Forge Technologies LLC.
+Fine-tuning open-source LLMs into **reasoning-process evaluators**: given a
+question and a candidate answer, the model judges the *reasoning itself* — not
+just whether the answer is right — and returns a fixed contract:
 
-## Overview
-
-The MTCA program studies a class of text — first-person affirmations, therapeutic intentions, spiritual assertions, behavioral commitments — that resists standard empirical evaluation yet increasingly appears as both training data and live input in AI systems. The program's instrument is a multi-model council: several frontier models, each in a fresh context, producing independent structured assessments that are then synthesized across responses.
-
-Each study in the line is self-contained (its own artifacts, findings, and reproducibility anchors) while sharing the council methodology and infrastructure.
-
-## Studies
-
-| Study | Focus | Status |
-|-------|-------|--------|
-| MTCA-1 | Content-class analysis across 5 public-domain texts / 4 lineages | Complete; writeup in progress |
-| MTCA-2 | Validated instrument applied to a contemporary consented specimen (Soul Sovereignty Principles™ v1) | **Data collection complete (571/571 calls); findings draft pending author framing review** |
-
-**MTCA-2 headline result:** applying MTCA-1's instrument unchanged to a new specimen, the framework places in the **same frame-driven regime** as MTCA-1's texts — inter-model similarity 0.1717 vs MTCA-1's 0.172 (a near-exact replication), mean frame stability 0.2489 vs 0.2345. Three independent analysis layers (quantitative, council-qualitative, reflexive) triangulate on one account: framing produces real surface variation over a stable reasoning core, and the models recognize this when shown their own work. See [`mtca-2/README.md`](mtca-2/README.md) and [`mtca-2/writeup/findings.md`](mtca-2/writeup/findings.md).
-
-## Repository layout
-
-```text
-mtca-research/
-├── README.md                     # this file — program overview
-├── LICENSE                       # Apache 2.0
-├── .gitattributes                # forces binary handling for artifacts (hash stability)
-├── .github/workflows/
-│   └── verify-integrity.yml      # CI: verifies both study manifests + MTCA-2 sidecars on every push
-│
-├── mtca-1/
-│   ├── README.md                 # MTCA-1 study specifics
-│   ├── MANIFEST.sha256           # authoritative byte-level integrity anchors
-│   ├── ARTIFACT_HASHES.json      # provenance-ID ↔ integrity-hash crosswalk
-│   ├── notebooks/                # Stage 1–8 notebooks
-│   ├── stage1/                   # foundational document (research question, nulls, ethics)
-│   ├── corpus/                   # 5 source texts (raw) + frozen corpus v1.0/v1.1
-│   ├── stage3_design/            # frame design + execution plan
-│   ├── stage6_execution/         # full council dataset (2000 responses + index)
-│   ├── stage7_synthesis/         # quantitative findings
-│   ├── stage8_council/           # qualitative judge assessments
-│   └── manifests/                # per-stage summary manifests
-│
-└── mtca-2/
-    ├── README.md                 # MTCA-2 study specifics
-    ├── MANIFEST.sha256           # 18 hash-anchored foundation artifacts (CI-verified)
-    ├── consent/                  # consent record (author: Marina Tudor) + sidecar
-    ├── prereg/
-    │   ├── mtca2_prereg.md        # pre-registration (9 hypotheses, nulls, analysis plan)
-    │   └── AMENDMENT_LOG.md        # amendment trail (2 amendments, hash-chained)
-    ├── corpus/                   # SSP_v1 frozen corpus (13 principles) + extraction/verification
-    ├── stage5_pilot/             # 40-call pilot (calibration validation; 40/40 clean)
-    ├── stage6_execution/         # full council dataset (520 responses, 100% clean parse)
-    ├── stage7_synthesis/         # quantitative frame-stability + MTCA-1 baseline comparison
-    ├── stage8_council/           # council synthesis (36 judge assessments)
-    ├── stage8_5_reflexive/       # Layer 3 reflexive (15 responses) + hash-locked prompt template
-    └── writeup/                  # findings.md (three-layer synthesis, draft)
+```
+VERDICT: sound | flawed | unsound
+STEP ANALYSIS: ...
+SEVERITY: 1-5
+REVISED ANSWER: ... (if flawed)
 ```
 
-The two studies differ in how they treat the pilot: MTCA-1 excluded its Stage 5 pilot as superseded; MTCA-2 retains its pilot as a committed calibration artifact (it locked the token/decoding parameters used in the full run).
+Two critics were trained on the same corpus and compared head-to-head. See
+[`experiments.md`](experiments.md) for the full write-up.
 
-## Reproducibility
+## Result
 
-Both studies are frozen, hash-anchored, and continuously verified.
+| metric              | tuned-Qwen3-8B | tuned-Mistral-7B |
+|---------------------|----------------|------------------|
+| verdict_rate        | 0.950          | 1.000            |
+| structure_rate      | 0.950          | 1.000            |
+| trap_detection_rate | 0.900          | 0.850            |
+| mean_score_3        | 2.800          | 2.850            |
 
-**Authoritative integrity** lives in each study's `MANIFEST.sha256`, verifiable on any platform:
+**Finding.** Fine-tuning teaches the output contract completely on both bases,
+but cannot manufacture reasoning capability the base model lacks (weaker Mistral
+maxed format, trailed on trap detection). The two models have **complementary,
+uncorrelated blind spots** — Mistral is strong where Qwen is weakest
+(frontier/meta/quantum reasoning), Qwen is strong where Mistral slips
+(counterfactual) — which argues for running both as cross-checks rather than
+picking one.
+
+## Pipeline
+
+| stage | script | output |
+|-------|--------|--------|
+| build corpus | `prepare_corpus.py` | unified ChatML JSONL + pinned `manifest.json` |
+| reserve eval set | `reserve_holdout.py` | `eval_holdout.txt` (stratified, contamination firewall) |
+| train | `train_critic.py` | QLoRA adapter + merged model |
+| evaluate | `eval_critic.py` | before/after scores, model-vs-model compare |
+| deploy | `export_gguf.py` + `Modelfile` | GGUF for Ollama |
+
+The training and eval scripts are model-agnostic via `--chat-template`
+(supports `qwen3` and `mistral`); adding a base is a one-flag change plus a
+marker entry.
+
+## Quickstart
 
 ```bash
-cd mtca-1 && sha256sum -c MANIFEST.sha256
-cd ../mtca-2 && sha256sum -c MANIFEST.sha256
+# 1. build the training corpus (own examples + external mix)
+python prepare_corpus.py --out ./corpus --local seed_examples.jsonl
+
+# 2. reserve the eval holdout (do this BEFORE training)
+python reserve_holdout.py
+
+# 3. train (Qwen shown; swap --model + --chat-template for Mistral)
+python train_critic.py --model unsloth/Qwen3-8B-unsloth-bnb-4bit \
+  --chat-template qwen3 --out outputs/critic-qwen3-8b --upsample 20
+
+# 4. evaluate base vs tuned, or model vs model
+python eval_critic.py --model <path> --tag <name> --chat-template <tmpl>
+python eval_critic.py --compare <tag_a> <tag_b>
+
+# 5. export for serving
+python export_gguf.py --model outputs/<run>/final --out outputs/<run>/gguf
+ollama create critic -f Modelfile && ollama run critic
 ```
 
-**MTCA-1 — two-role hashing model.** Frozen-artifact *filenames* embed a **design-time provenance identifier** — a content hash computed during the freeze step that binds related artifacts into one version chain (e.g., Stage 3 design `6380e711…` links the design file, its execution plan, and every Stage 6 response generated under it). These filename identifiers are **not** byte-integrity checksums (corpus v1.0 is the lone self-verifying exception). The provenance-ID ↔ byte-hash mapping is recorded in `mtca-1/ARTIFACT_HASHES.json`. Corpus v1.1 canonical integrity hash: `e8e998c9099e0fa6dd0d3f98ae5ae49af3fc826c9a2c8c51a7eff19b4a439a53`.
+## Design notes
 
-**MTCA-2 — manifest + sidecars.** `mtca-2/MANIFEST.sha256` anchors the 18 foundation artifacts (corpus, pre-registration, consent, Layer 3 template, and their sidecars). The frozen corpus is `b917f798…`; the pre-registration (at Amendment 002) is `ad94f8d5…`. The 571 council responses (520 Stage 6 + 36 Stage 8 + 15 Stage 8.5) are committed in full. The Stage 7 synthesis is deterministic pure computation over the committed responses and reproduces its SHA on any machine; method fidelity to MTCA-1 (extraction, tokenization, Jaccard, null thresholds, frame prompts) was verified byte-equivalent before results were locked.
+- **Contamination firewall.** The HF-IQR benchmark is held out as the *eval
+  instrument*, never used as training data, so the before/after comparison is
+  honest.
+- **Local upsampling.** The hand-written critique examples are ~0.5% of the
+  corpus raw; they're repeated (`--upsample`) so they carry real weight against
+  the external instruction data without discarding it.
+- **Reproducibility.** Every corpus build pins dataset revisions in
+  `manifest.json`; runs are seeded.
 
-**Continuous verification.** `.github/workflows/verify-integrity.yml` runs `sha256sum -c` on **both** study manifests plus the four MTCA-2 sidecars (corpus, pre-registration, consent, Layer 3 template) on every push and pull request. A green check certifies that committed bytes match the manifests on a clean clone.
+## Environment
 
-**Reproduction path:** load the frozen corpus and frame prompts → execute against the five council models using the archived design/pre-registration → verify response bytes against `MANIFEST.sha256`. Any divergence indicates either model drift (updated model versions or SDKs) or a reproduction error — both informative. MTCA-2's Amendment 002 documents the SDK-driven token/decoding calibrations required to reproduce MTCA-1's completion behavior on current model SDKs.
+Trained locally on a single RTX 5070 (12GB, Blackwell) under WSL2. Requires
+Python 3.11 (3.14 breaks `datasets`/`dill`), torch 2.11 + cu128, and Unsloth.
+Large artifacts (`outputs/`, `*.gguf`) are gitignored — the code and manifests
+reproduce them.
 
-## Methodology principles
+## Status
 
-- **Frozen artifacts at every stage**, hash-anchored and archived.
-- **Pre-registered nulls** — failure conditions defined before execution; null results are valid findings.
-- **Language discipline** — all claims framed as model behavior under specified methodology, never as properties of the source texts.
-- **Consent for non-public-domain specimens** — MTCA-2's specimen is used under an explicit consent agreement that binds the model-behavior language discipline and reserves author framing review before public release.
-- **AI-augmented research disclosure** — where AI assists analysis, synthesis, or drafting, roles are documented and the researcher adjudicates.
-- **Reflexivity tracking** — researcher decisions and corrections logged alongside artifacts (see MTCA-2's amendment log).
-
-## Program lineage
-
-- **HF-IQR (V1–V3)** established and refined the multi-model council methodology for AI critique-behavior analysis; V3 characterized position-defense and calibration patterns across five frontier models, including a ceiling-effect null on the primary endpoint. MTCA-2's reflexive layer (Stage 8.5) is a direct carryover of the HF-IQR V3 reflexive technique.
-- **QPU Drift Collector** established the reproducibility conventions used across IRMB studies — frozen designs, SHA256 anchoring, open release under Apache 2.0.
-- **MTCA-1** applied the council methodology to a new content class with a frame-sensitivity experimental design.
-- **MTCA-2** validated that instrument by specimen-swap replication on a contemporary consented framework.
-
-## Citation
-
-Davis, B. (2026). *MTCA Research Program: Multi-model AI reasoning studies on non-propositional content classes.* Hudson Forge Technologies LLC. https://github.com/billyrdavis1985-bot/mtca-research
-
-Individual studies carry their own citations in their directories.
-
-## License
-
-Apache 2.0. See `LICENSE`.
-
----
-
-> *Experiment. Measure. Refine. Repeat.*
-> — Hudson Forge Technologies · IRMB Research Program
+Two critics trained, evaluated, deployed (GGUF/Ollama), and archived. Intended
+as lightweight, local, specialist verification components. See `experiments.md`
+for detailed run logs and evidence-based next steps.
