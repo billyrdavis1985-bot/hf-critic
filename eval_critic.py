@@ -86,7 +86,7 @@ def build_critique_prompt(q):
             f"question, then critique that reasoning using the required format.]")
 
 
-def run_model(model_path, questions, seq_len, max_new):
+def run_model(model_path, questions, seq_len, max_new, chat_template="qwen3"):
     from unsloth import FastLanguageModel
     from unsloth.chat_templates import get_chat_template
     import torch
@@ -98,7 +98,7 @@ def run_model(model_path, questions, seq_len, max_new):
         dtype=None,
     )
     FastLanguageModel.for_inference(model)
-    tokenizer = get_chat_template(tokenizer, chat_template="qwen3")
+    tokenizer = get_chat_template(tokenizer, chat_template=chat_template)
 
     outputs = []
     for i, q in enumerate(questions, 1):
@@ -147,10 +147,10 @@ def score_one(o):
             "gt_term_hits": hits, "gt_term_total": len(gt_terms)}
 
 
-def evaluate(tag, model_path, seq_len, max_new):
+def evaluate(tag, model_path, seq_len, max_new, chat_template="qwen3"):
     EVAL_DIR.mkdir(exist_ok=True)
     questions = load_holdout_questions()
-    outputs = run_model(model_path, questions, seq_len, max_new)
+    outputs = run_model(model_path, questions, seq_len, max_new, chat_template)
 
     for o in outputs:
         o["scores"] = score_one(o)
@@ -203,6 +203,9 @@ def main():
     ap.add_argument("--tag")
     ap.add_argument("--seq-len", type=int, default=2048)
     ap.add_argument("--max-new", type=int, default=800)
+    ap.add_argument("--chat-template", default="qwen3",
+                    choices=["qwen3", "mistral"],
+                    help="must match the model being evaluated")
     ap.add_argument("--compare", nargs=2, metavar=("TAG_A", "TAG_B"))
     args = ap.parse_args()
 
@@ -210,7 +213,7 @@ def main():
         compare(*args.compare)
     else:
         assert args.model and args.tag, "need --model and --tag (or --compare)"
-        evaluate(args.tag, args.model, args.seq_len, args.max_new)
+        evaluate(args.tag, args.model, args.seq_len, args.max_new, args.chat_template)
 
 
 if __name__ == "__main__":

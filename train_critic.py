@@ -61,6 +61,9 @@ def load_corpus(train_path, val_path, upsample_factor):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="unsloth/Qwen3-8B-unsloth-bnb-4bit")
+    ap.add_argument("--chat-template", default="qwen3",
+                    choices=["qwen3", "mistral"],
+                    help="chat template + response markers to match the base model")
     ap.add_argument("--train", default="corpus/train.jsonl")
     ap.add_argument("--val", default="corpus/val.jsonl")
     ap.add_argument("--out", default="outputs/critic-qwen3-8b")
@@ -95,7 +98,19 @@ def main():
         random_state=args.seed,
     )
 
-    tokenizer = get_chat_template(tokenizer, chat_template="qwen3")
+    # Chat-template + response-marker pairs per model family. Both the
+    # template applied here AND the train_on_responses_only markers below
+    # must match, or masking silently fails and the model trains on prompts.
+    TEMPLATES = {
+        "qwen3":   {"tmpl": "qwen3",
+                     "instr": "<|im_start|>user\n",
+                     "resp":  "<|im_start|>assistant\n"},
+        "mistral": {"tmpl": "mistral",
+                     "instr": "[INST]",
+                     "resp":  "[/INST]"},
+    }
+    tpl = TEMPLATES[args.chat_template]
+    tokenizer = get_chat_template(tokenizer, chat_template=tpl["tmpl"])
 
     # --- Data --------------------------------------------------------------
     train_ds, val_ds = load_corpus(args.train, args.val, args.upsample)
@@ -152,8 +167,8 @@ def main():
     from unsloth.chat_templates import train_on_responses_only
     trainer = train_on_responses_only(
         trainer,
-        instruction_part="<|im_start|>user\n",
-        response_part="<|im_start|>assistant\n",
+        instruction_part=tpl["instr"],
+        response_part=tpl["resp"],
     )
 
     print("\n=== starting training ===")
