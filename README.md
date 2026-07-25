@@ -1,8 +1,16 @@
 # hf-critic — Hudson Forge Reasoning Critic
 
-Fine-tuning open-source LLMs into **reasoning-process evaluators**: given a
-question and a candidate answer, the model judges the *reasoning itself* — not
-just whether the answer is right — and returns a fixed contract:
+**Fine-tuning open-source LLMs into reasoning-process evaluators** — models that
+judge the *quality of reasoning* behind an answer, not just whether the answer
+is correct. Part of the IRMB research program at Hudson Forge Technologies LLC,
+and developed as an MLOps coursework project.
+
+---
+
+## Overview
+
+A reasoning critic takes a question and a candidate response and returns a fixed
+assessment contract:
 
 ```
 VERDICT: sound | flawed | unsound
@@ -11,39 +19,63 @@ SEVERITY: 1-5
 REVISED ANSWER: ... (if flawed)
 ```
 
-Two critics were trained on the same corpus and compared head-to-head. See
-[`experiments.md`](experiments.md) for the full write-up.
+The project fine-tunes small, open-weight models into this role using a corpus
+of hand-written critique examples mixed with external instruction data, then
+evaluates them against a held-out benchmark reserved as a contamination
+firewall. Two models were trained on identical data and compared head-to-head.
 
-## Result
+The intended use is as **lightweight, local, specialist verification
+components** — a cheap always-on reasoning check, not a primary model.
 
-| metric              | tuned-Qwen3-8B | tuned-Mistral-7B |
-|---------------------|----------------|------------------|
-| verdict_rate        | 0.950          | 1.000            |
-| structure_rate      | 0.950          | 1.000            |
-| trap_detection_rate | 0.900          | 0.850            |
-| mean_score_3        | 2.800          | 2.850            |
+## Results
 
-**Finding.** Fine-tuning teaches the output contract completely on both bases,
-but cannot manufacture reasoning capability the base model lacks (weaker Mistral
-maxed format, trailed on trap detection). The two models have **complementary,
-uncorrelated blind spots** — Mistral is strong where Qwen is weakest
-(frontier/meta/quantum reasoning), Qwen is strong where Mistral slips
-(counterfactual) — which argues for running both as cross-checks rather than
-picking one.
+| model            | verdict_rate | structure_rate | trap_detection | mean_score_3 |
+|------------------|--------------|----------------|----------------|--------------|
+| base Qwen3-8B    | 0.525        | 0.500          | 0.975          | 2.000        |
+| tuned Qwen3-8B   | 0.950        | 0.950          | 0.900          | 2.800        |
+| tuned Mistral-7B | 1.000        | 1.000          | 0.850          | 2.850        |
+
+Evaluated on a 40-question stratified holdout. See
+[`experiments.md`](experiments.md) for full run logs and per-category deltas.
+
+**Headline finding.** Fine-tuning teaches the output contract completely on both
+bases, but cannot manufacture reasoning capability a base model lacks (the
+weaker Mistral maxed format at 1.000 but trailed on trap detection). The two
+models have **complementary, uncorrelated blind spots** — Mistral is strong
+where Qwen is weakest (frontier / meta / quantum reasoning), Qwen is strong
+where Mistral slips (counterfactual). This argues for running both as
+cross-checks rather than selecting one.
+
+## Repository layout
+
+```
+hf-critic/
+├── README.md              # this file
+├── experiments.md         # detailed run logs, findings, next steps
+├── prepare_corpus.py      # build unified ChatML corpus (own + external), pinned manifest
+├── reserve_holdout.py     # reserve stratified eval set (contamination firewall)
+├── train_critic.py        # QLoRA fine-tune; model-agnostic via --chat-template
+├── eval_critic.py         # before/after + model-vs-model scoring on the holdout
+├── export_gguf.py         # quantize merged model to GGUF for serving
+├── Modelfile              # Ollama config (system prompt + inference params)
+├── seed_examples.jsonl    # 38 hand-written critique examples (12 categories)
+├── eval_holdout.txt       # reserved HF-IQR question IDs — never trained on
+└── corpus/
+    └── manifest.json      # pinned dataset revisions + run config (reproducibility anchor)
+```
+
+Large artifacts (`outputs/`, `*.gguf`, generated corpus splits) are gitignored —
+the code and manifests reproduce them.
 
 ## Pipeline
 
 | stage | script | output |
 |-------|--------|--------|
 | build corpus | `prepare_corpus.py` | unified ChatML JSONL + pinned `manifest.json` |
-| reserve eval set | `reserve_holdout.py` | `eval_holdout.txt` (stratified, contamination firewall) |
-| train | `train_critic.py` | QLoRA adapter + merged model |
+| reserve eval set | `reserve_holdout.py` | `eval_holdout.txt` (stratified) |
+| train | `train_critic.py` | QLoRA adapter + merged 16-bit model |
 | evaluate | `eval_critic.py` | before/after scores, model-vs-model compare |
-| deploy | `export_gguf.py` + `Modelfile` | GGUF for Ollama |
-
-The training and eval scripts are model-agnostic via `--chat-template`
-(supports `qwen3` and `mistral`); adding a base is a one-flag change plus a
-marker entry.
+| deploy | `export_gguf.py` + `Modelfile` | GGUF served via Ollama |
 
 ## Quickstart
 
@@ -51,7 +83,7 @@ marker entry.
 # 1. build the training corpus (own examples + external mix)
 python prepare_corpus.py --out ./corpus --local seed_examples.jsonl
 
-# 2. reserve the eval holdout (do this BEFORE training)
+# 2. reserve the eval holdout — BEFORE training
 python reserve_holdout.py
 
 # 3. train (Qwen shown; swap --model + --chat-template for Mistral)
@@ -67,26 +99,65 @@ python export_gguf.py --model outputs/<run>/final --out outputs/<run>/gguf
 ollama create critic -f Modelfile && ollama run critic
 ```
 
-## Design notes
+The train and eval scripts are model-agnostic via `--chat-template` (`qwen3`,
+`mistral`); adding a base is a one-flag change plus a marker entry.
 
-- **Contamination firewall.** The HF-IQR benchmark is held out as the *eval
-  instrument*, never used as training data, so the before/after comparison is
-  honest.
-- **Local upsampling.** The hand-written critique examples are ~0.5% of the
-  corpus raw; they're repeated (`--upsample`) so they carry real weight against
-  the external instruction data without discarding it.
-- **Reproducibility.** Every corpus build pins dataset revisions in
-  `manifest.json`; runs are seeded.
+## Reproducibility
 
-## Environment
+- **Pinned inputs.** `prepare_corpus.py` records exact dataset revisions in
+  `corpus/manifest.json`; every corpus is rebuildable from it.
+- **Contamination firewall.** The HF-IQR benchmark is reserved as the *eval
+  instrument* (`eval_holdout.txt`) and never used as training data, so the
+  before/after comparison is honest.
+- **Seeded runs.** Training and holdout selection are seeded.
+- **Controlled comparison.** The Qwen vs Mistral study holds corpus, config,
+  epochs, seed, and holdout constant; the only variable is the base model.
 
-Trained locally on a single RTX 5070 (12GB, Blackwell) under WSL2. Requires
-Python 3.11 (3.14 breaks `datasets`/`dill`), torch 2.11 + cu128, and Unsloth.
-Large artifacts (`outputs/`, `*.gguf`) are gitignored — the code and manifests
-reproduce them.
+## Methodology principles
 
-## Status
+- **Held-out evaluation** — the benchmark is never in the training set.
+- **Honest deltas** — results reported base-vs-tuned and model-vs-model, with
+  regressions and tradeoffs stated, not hidden (e.g. the format-vs-capability
+  tradeoff, the frontier-reasoning role drift).
+- **Qualitative verification** — outputs are spot-read, not trusted on scorer
+  numbers alone; format adherence is not conflated with reasoning quality.
+- **Local upsampling** — the small hand-written set is weighted (not merely
+  concatenated) against the external data so it shapes behavior without being
+  drowned out.
 
-Two critics trained, evaluated, deployed (GGUF/Ollama), and archived. Intended
-as lightweight, local, specialist verification components. See `experiments.md`
-for detailed run logs and evidence-based next steps.
+## Program lineage
+
+- **HF-IQR (V1-V3)** established the multi-model council methodology for
+  AI critique-behavior analysis and produced the reasoning benchmark reused here
+  as a held-out eval instrument:
+  [V1](https://github.com/billyrdavis1985-bot/-IRMB_HF-IQR_ReasoningBenchmark) ·
+  [V2](https://github.com/billyrdavis1985-bot/HF-IQR-V2-Hudson-Forge-Intelligence-and-Reasoning-Benchmark) ·
+  [V3](https://github.com/billyrdavis1985-bot/HF-IQR-V3).
+- **hf-critic** turns that analysis line into a *component*: distilling
+  critique behavior into small local models intended as specialist verification
+  reflexes for downstream agent work (Forge Agent / AURION) and the Hudson
+  Forge cluster.
+
+## Related IRMB repositories
+
+The reasoning benchmark used here as a held-out eval instrument:
+
+- [HF-IQR V1](https://github.com/billyrdavis1985-bot/-IRMB_HF-IQR_ReasoningBenchmark)
+- [HF-IQR V2](https://github.com/billyrdavis1985-bot/HF-IQR-V2-Hudson-Forge-Intelligence-and-Reasoning-Benchmark)
+- [HF-IQR V3](https://github.com/billyrdavis1985-bot/HF-IQR-V3)
+
+## Citation
+
+```
+Davis, B. (2026). hf-critic: Fine-tuned reasoning-process evaluators as
+local verification specialists. Hudson Forge Technologies LLC.
+https://github.com/billyrdavis1985-bot/hf-critic
+```
+
+## License
+
+Apache 2.0. See [LICENSE](LICENSE).
+
+---
+
+*Experiment. Measure. Refine. Repeat. — Hudson Forge Technologies · IRMB Research Program*
