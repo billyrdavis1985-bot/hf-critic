@@ -1,0 +1,23 @@
+{
+  "tag": "tuned-mistral",
+  "model": "outputs/critic-mistral-7b/final",
+  "n": 40,
+  "verdict_rate": 1.0,
+  "structure_rate": 1.0,
+  "trap_detection_rate": 0.85,
+  "mean_score_3": 2.85,
+  "by_category_mean": {
+    "adversarial": 3.0,
+    "causal_chain": 3.0,
+    "counterfactual": 2.5,
+    "ethical_dilemma": 3.0,
+    "frontier_reasoning": 3.0,
+    "logical_syllogism": 3.0,
+    "mathematical_proof": 3.0,
+    "meta_reasoning": 2.67,
+    "probabilistic": 3.0,
+    "quantum_reasoning": 3.0,
+    "spatial_reasoning": 2.0,
+    "temporal_reasoning": 2.5
+  }
+}

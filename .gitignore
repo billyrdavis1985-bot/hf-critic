@@ -23,3 +23,4 @@ nohup.out
 # HF cache / downloaded dataset
 HF_IQR_Master_Dataset_v2.json
 .cache/
+unsloth_compiled_cache/
