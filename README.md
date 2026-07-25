@@ -33,18 +33,24 @@ components** — a cheap always-on reasoning check, not a primary model.
 |------------------|--------------|----------------|----------------|--------------|
 | base Qwen3-8B    | 0.525        | 0.500          | 0.975          | 2.000        |
 | tuned Qwen3-8B   | 0.950        | 0.950          | 0.900          | 2.800        |
+| base Mistral-7B  | 1.000        | 0.950          | 0.800          | 2.750        |
 | tuned Mistral-7B | 1.000        | 1.000          | 0.850          | 2.850        |
 
 Evaluated on a 40-question stratified holdout. See
 [`experiments.md`](experiments.md) for full run logs and per-category deltas.
 
-**Headline finding.** Fine-tuning teaches the output contract completely on both
-bases, but cannot manufacture reasoning capability a base model lacks (the
-weaker Mistral maxed format at 1.000 but trailed on trap detection). The two
-models have **complementary, uncorrelated blind spots** — Mistral is strong
-where Qwen is weakest (frontier / meta / quantum reasoning), Qwen is strong
-where Mistral slips (counterfactual). This argues for running both as
-cross-checks rather than selecting one.
+**Headline finding.** Fine-tuning pulled both models toward the capability
+level embedded in the training data — from opposite directions. Qwen's trap
+detection came *down* (0.975 → 0.900, mild forgetting) while Mistral's came
+*up* (0.800 → 0.850, a gain): they converged toward the corpus. Format proved
+base-dependent: Mistral followed the output contract from the system prompt
+alone (base verdict rate 1.000), while Qwen needed the fine-tune to learn it
+(0.525 → 0.950). At n=40 a 0.05 delta is two questions, so the convergence is
+consistent but not statistically proven. The tuned models also show
+**complementary, uncorrelated blind spots** — Mistral strong where Qwen is
+weakest (frontier / meta / quantum), Qwen strong where Mistral slips
+(counterfactual) — which argues for running both as cross-checks rather than
+selecting one.
 
 ## Repository layout
 

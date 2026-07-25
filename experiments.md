@@ -5,6 +5,37 @@ lesson learned. Newest first.
 
 ---
 
+## Addendum: base-Mistral baseline closes the 2x2 (2026-07-25)
+
+Caught before publication: the comparison had no base-Mistral row — tuned-Mistral
+had only ever been compared to tuned-Qwen. Ran the missing eval
+(`--tag base-mistral --chat-template mistral`). Result:
+
+| metric              | base-Mistral | tuned-Mistral | delta  |
+|---------------------|--------------|---------------|--------|
+| verdict_rate        | 1.000        | 1.000         | +0.000 |
+| structure_rate      | 0.950        | 1.000         | +0.050 |
+| trap_detection_rate | 0.800        | 0.850         | +0.050 |
+| mean_score_3        | 2.750        | 2.850         | +0.100 |
+
+Per-category deltas (tuning): frontier +0.67, temporal +0.50, ethical +0.33,
+syllogism +0.25; spatial -0.50; rest unchanged.
+
+**This revises the headline finding.** Base Mistral already followed the output
+contract from the system prompt alone (verdict 1.000 untrained) — so "tuning
+taught the contract on both" holds only for Qwen. And Mistral's trap detection
+ROSE with tuning (0.800 -> 0.850) while Qwen's fell (0.975 -> 0.900): the two
+converged from opposite directions toward the training data's implicit
+capability level. Revised statement: *fine-tuning pulls a model toward its
+data — down from above, up from below* — rather than "teaches format, not
+capability."
+
+Caveats: n=40, so 0.05 = two questions; convergence is consistent, not proven.
+Lesson recorded: an incomplete comparison (missing baseline) nearly shipped a
+cleaner, wronger conclusion. The 2x2 is the minimum honest design.
+
+---
+
 ## Cross-model comparison — Qwen3-8B vs Mistral-7B (2026-07-25)
 
 **Goal.** Hold everything constant except the base model, and measure how the
