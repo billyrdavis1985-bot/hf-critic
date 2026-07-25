@@ -1,0 +1,25 @@
+# Modelfile — Hudson Forge Reasoning Critic (Qwen3-8B v1)
+# Usage:
+#   1. Export the GGUF first:  python export_gguf.py
+#   2. Point FROM at the produced .gguf file (edit the path below to match).
+#   3. Build the Ollama model:  ollama create critic -f Modelfile
+#   4. Run it:                  ollama run critic
+#
+# The FROM line must point at the actual .gguf filename export_gguf.py wrote.
+# Check it with:  ls outputs/critic-qwen3-8b/gguf/*.gguf
+
+FROM ./outputs/critic-qwen3-8b/final_gguf/final.Q4_K_M.gguf
+
+# --- System prompt: the critic's role, identical to the training contract ---
+SYSTEM """You are a reasoning process evaluator. Given a question and a candidate response, assess the quality of the reasoning process itself, not just answer correctness. Identify where reasoning holds, where it breaks down, and whether conclusions follow from stated premises. Output: VERDICT (sound / flawed / unsound), STEP ANALYSIS, SEVERITY (1-5), and a REVISED ANSWER if flawed."""
+
+# --- Inference parameters ---
+# Low temperature: a critic should be consistent and deterministic, not creative.
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9
+PARAMETER num_ctx 4096
+PARAMETER repeat_penalty 1.05
+
+# Qwen3 chat template markers (Ollama needs the stop tokens to end turns cleanly)
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"

@@ -1,4 +1,25 @@
-﻿.venv/
+# Large model artifacts (GitHub rejects >100MB)
+outputs/
+*.gguf
+*.safetensors
+*.bin
+
+# Generated corpus splits (reproducible from prepare_corpus.py)
 corpus/train.jsonl
 corpus/val.jsonl
+
+# Eval generations (reproducible from eval_critic.py)
+eval/results_*.json
+
+# Environment
+.venv/
 __pycache__/
+*.pyc
+
+# Logs
+*.log
+nohup.out
+
+# HF cache / downloaded dataset
+HF_IQR_Master_Dataset_v2.json
+.cache/

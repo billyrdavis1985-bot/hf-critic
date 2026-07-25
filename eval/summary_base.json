@@ -1,0 +1,23 @@
+{
+  "tag": "base",
+  "model": "unsloth/Qwen3-8B-unsloth-bnb-4bit",
+  "n": 40,
+  "verdict_rate": 0.525,
+  "structure_rate": 0.5,
+  "trap_detection_rate": 0.975,
+  "mean_score_3": 2.0,
+  "by_category_mean": {
+    "adversarial": 2.0,
+    "causal_chain": 3.0,
+    "counterfactual": 3.0,
+    "ethical_dilemma": 2.67,
+    "frontier_reasoning": 2.67,
+    "logical_syllogism": 1.25,
+    "mathematical_proof": 1.75,
+    "meta_reasoning": 2.0,
+    "probabilistic": 1.5,
+    "quantum_reasoning": 1.0,
+    "spatial_reasoning": 1.0,
+    "temporal_reasoning": 1.5
+  }
+}

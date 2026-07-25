@@ -1,0 +1,23 @@
+{
+  "tag": "tuned",
+  "model": "outputs/critic-qwen3-8b/final",
+  "n": 40,
+  "verdict_rate": 0.95,
+  "structure_rate": 0.95,
+  "trap_detection_rate": 0.9,
+  "mean_score_3": 2.8,
+  "by_category_mean": {
+    "adversarial": 3.0,
+    "causal_chain": 3.0,
+    "counterfactual": 3.0,
+    "ethical_dilemma": 3.0,
+    "frontier_reasoning": 2.33,
+    "logical_syllogism": 3.0,
+    "mathematical_proof": 3.0,
+    "meta_reasoning": 2.33,
+    "probabilistic": 3.0,
+    "quantum_reasoning": 2.67,
+    "spatial_reasoning": 2.0,
+    "temporal_reasoning": 2.5
+  }
+}
