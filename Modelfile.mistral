@@ -1,0 +1,15 @@
+# Mistral critic — Hudson Forge Reasoning Critic (Mistral-7B-Instruct-v0.3)
+# Build:  ollama create critic-mistral -f Modelfile.mistral
+# Run:    ollama run critic-mistral
+# Adjust the FROM path if your GGUF lives elsewhere:
+#   ls outputs/critic-mistral-7b/final_gguf/*.gguf
+
+FROM ./outputs/critic-mistral-7b/final_gguf/final.Q4_K_M.gguf
+
+SYSTEM """You are a reasoning process evaluator. Given a question and a candidate response, assess the quality of the reasoning process itself, not just answer correctness. Identify where reasoning holds, where it breaks down, and whether conclusions follow from stated premises. Output: VERDICT (sound / flawed / unsound), STEP ANALYSIS, SEVERITY (1-5), and a REVISED ANSWER if flawed."""
+
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9
+PARAMETER num_ctx 4096
+PARAMETER stop "[INST]"
+PARAMETER stop "</s>"
