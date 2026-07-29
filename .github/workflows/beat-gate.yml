@@ -1,0 +1,33 @@
+name: beat-gate
+# Regression gate: a critic whose trap_detection_rate falls below the
+# contract threshold cannot merge. Attestation model — gates on the
+# committed eval summary (runners have no GPU to re-run the eval).
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  trap-detection-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache apr binary
+        id: cache-apr
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/apr
+          key: apr-0.61.0-${{ runner.os }}
+
+      - name: Install apr
+        if: steps.cache-apr.outputs.cache-hit != 'true'
+        run: cargo install aprender --version 0.61.0 --locked
+
+      - name: Verify apr
+        run: apr --version
+
+      - name: Trap-detection beat gate (tuned-Qwen)
+        run: ./scripts/beat_gate.sh eval/summary_tuned.json
