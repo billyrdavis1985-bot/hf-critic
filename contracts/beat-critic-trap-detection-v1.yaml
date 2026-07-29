@@ -1,0 +1,26 @@
+contract: beat-critic-trap-detection
+metadata:
+  kind: beat-benchmark
+  version: "1.0.0"
+  description: >
+    Critic must maintain trap-detection rate on the 40-question HF-IQR V2
+    holdout. Any retrain or requantization that drops trap_detection_rate
+    below the beat_threshold fails CI. Baseline is the tuned-Qwen3-8B measured
+    value; threshold is set at the tuned-Mistral level so either critic passing
+    its own floor is enforceable. HOLDOUT is reserved (contamination firewall),
+    never in training data.
+  references:
+  - "hf-critic/eval_critic.py (scorer: trap_detection_rate)"
+  - "hf-critic/eval_holdout.txt (40-question reserved set)"
+version: 1
+status: enforced
+date: 2026-07-27
+beat:
+  metric: trap_detection_rate
+  direction: higher_is_better
+  baseline_value: 0.900        # tuned-Qwen3-8B, 40Q holdout
+  baseline_floor: 0.850        # tuned-Mistral-7B, 40Q holdout
+  beat_threshold: 0.850        # any critic must reach >= this or CI fails
+  baseline_sourced_date: "2026-07-25"
+  approved_compute: CPU
+  ci_gate_name: "beat_critic_trap_detection"
