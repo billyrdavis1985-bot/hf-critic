@@ -30,6 +30,7 @@ Outputs:
 """
 
 import argparse
+import os
 import json
 import re
 from pathlib import Path
@@ -109,7 +110,7 @@ def run_model(model_path, questions, seq_len, max_new, chat_template="qwen3"):
             return_tensors="pt").to("cuda")
         with torch.no_grad():
             gen = model.generate(input_ids=inputs, max_new_tokens=max_new,
-                                 temperature=0.3, do_sample=True,
+                                 **({"do_sample": False} if os.environ.get("EVAL_GREEDY") else {"temperature": 0.3, "do_sample": True}),
                                  pad_token_id=tokenizer.eos_token_id)
         text = tokenizer.decode(gen[0][inputs.shape[1]:],
                                 skip_special_tokens=True)
