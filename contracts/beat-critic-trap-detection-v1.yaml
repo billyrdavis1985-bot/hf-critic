@@ -24,3 +24,21 @@ beat:
   baseline_sourced_date: "2026-07-25"
   approved_compute: CPU
   ci_gate_name: "beat_critic_trap_detection"
+notes: |
+  What this gate measures: trap_detected is a lexical-overlap heuristic, not a
+  reasoning judgement. It extracts 5+ letter words from ground_truth and passes
+  when >= max(2, len(terms)//4) appear as substrings in the critique. Matching is
+  substring-based, so a critique reaching the opposite conclusion can still score.
+  On the greedy run, 9 of 10 rows the critic labelled "sound" also scored
+  trap_detected=True — the metric is largely independent of the critic's verdict.
+  Requiring a non-endorsing verdict drops the rate from 0.900 to 0.675.
+
+  Treat this as a REGRESSION CANARY: it catches catastrophic degradation (the
+  model ceasing to produce on-topic substantive critiques). It does NOT support
+  claims about reasoning quality or adversarial robustness.
+
+  Scope: the eval is a SELF-critique probe (the model answers the question, then
+  critiques its own reasoning). Only 4 of 40 holdout rows carry an annotated
+  trap_type; on those 4 the tuned critic flagged all four with non-endorsing
+  verdicts. Measurement is on greedy decoding (EVAL_GREEDY=1), verified
+  bit-identical across two runs.

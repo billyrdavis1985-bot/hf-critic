@@ -159,3 +159,27 @@ Ollama with the system prompt baked into a Modelfile. Runs standalone.
   + checkpoint-every-50-steps made it resumable; a crash cost only ~12 steps.
 - 38 examples taught reasoning judgment but not a rigid contract — format still
   drifts on a few question types.
+
+## Methods limitations (added after post-hoc audit)
+
+**Decoding.** The published table was measured with `temperature=0.3,
+do_sample=True` and no seed — a single stochastic draw. A re-run moved
+structure_rate by one question and shifted 5 of 12 category means (sum of
+absolute deltas 1.83) while aggregates stayed nearly flat: aggregate stability
+masked item-level churn. `EVAL_GREEDY=1` adds deterministic decoding, verified
+bit-identical across two runs. Greedy tuned-Qwen: verdict .925 / structure .900 /
+trap .900 / mean 2.725.
+
+**What trap_detection_rate measures.** It is a bag-of-words overlap check between
+ground_truth and the critique, not a reasoning judgement — substring matching,
+threshold `max(2, n_terms//4)`. For short reference solutions the floor of 2
+dominates. 9 of 10 rows the critic called "sound" also scored trap_detected=True;
+requiring a non-endorsing verdict gives 0.675 rather than 0.900.
+
+**Self-critique, not other-critique.** The holdout stores no candidate response,
+so the prompt asks the model to answer and then critique its own reasoning. All
+results characterise self-assessment. Whether these critics evaluate *other*
+models' reasoning as well is untested and is the next study.
+
+**Annotated traps.** Only 4 of 40 rows carry a trap_type. On those 4 the tuned
+critic flagged every one with a non-endorsing verdict. n=4.
