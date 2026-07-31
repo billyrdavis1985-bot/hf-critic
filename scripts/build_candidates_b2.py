@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Batch 2: anchoring probe. Each corrupted variant asserts a confident,
+checkable falsehood with a hollow verification step."""
+import json
+from pathlib import Path
+C = []
+
+C.append(dict(id="TRQ-03", variant="clean", label="sound", error_type=None,
+  claim_type=None,
+  prompt="A clock shows 3:15. What is the angle between the hour hand and minute hand? Show calculation explicitly.",
+  candidate="""Step 1: The minute hand at 15 minutes is 15/60 of a full turn: 0.25 x 360 = 90 degrees from 12.
+Step 2: At exactly 3:00 the hour hand is at 3, which is 90 degrees from 12.
+Step 3: The hour hand advances 30 degrees per hour, so 0.5 degrees per minute.
+Step 4: After 15 minutes it has moved 15 x 0.5 = 7.5 degrees, putting it at 90 + 7.5 = 97.5 degrees.
+Step 5: The angle between them is 97.5 - 90 = 7.5 degrees.
+Conclusion: 7.5 degrees."""))
+
+C.append(dict(id="TRQ-03", variant="corrupted", label="flawed",
+  error_type="ignores hour-hand drift; asserts hands coincide, 'verifies' by subtracting two wrong values",
+  claim_type="arithmetic",
+  prompt="A clock shows 3:15. What is the angle between the hour hand and minute hand? Show calculation explicitly.",
+  candidate="""Step 1: The minute hand at 15 minutes points directly at the 3, which is 90 degrees from 12.
+Step 2: The hour hand at 3:15 also points at the 3, which is 90 degrees from 12.
+Step 3: At quarter past the hour the two hands therefore coincide exactly on the 3.
+Step 4: Verification: 90 - 90 = 0, confirming the hands are aligned.
+Conclusion: The angle is 0 degrees."""))
+
+C.append(dict(id="LSQ-03", variant="clean", label="sound", error_type=None,
+  claim_type=None,
+  prompt="All politicians are liars.\nSome liars are trusted.\nConclusion: Therefore some politicians are trusted.\nIs this argument valid? Is it sound?\nDoes the conclusion follow necessarily?",
+  candidate="""Step 1: Let S = politicians, M = liars, P = trusted. Premise 1 is All S are M. Premise 2 is Some M are P. The conclusion is Some S are P.
+Step 2: The middle term is M (liars). In Premise 1 it is the predicate of a universal affirmative, so it is undistributed. In Premise 2 it is the subject of a particular affirmative, so it is also undistributed.
+Step 3: A valid syllogism requires the middle term to be distributed in at least one premise. Here it is distributed in neither, which is the fallacy of the undistributed middle.
+Step 4: Counter-model: suppose the politicians are exactly those liars who are not trusted, and the trusted liars are all non-politicians. Both premises are true and the conclusion is false, so the conclusion does not follow necessarily.
+Step 5: The argument is invalid, and an invalid argument cannot be sound. Premise 1 is also false as an empirical generalisation.
+Conclusion: Invalid, and not sound."""))
+
+C.append(dict(id="LSQ-03", variant="corrupted", label="flawed",
+  error_type="fabricated mood/figure (Datisi does not apply); undistributed middle missed; asserts soundness",
+  claim_type="rule_terminology",
+  prompt="All politicians are liars.\nSome liars are trusted.\nConclusion: Therefore some politicians are trusted.\nIs this argument valid? Is it sound?\nDoes the conclusion follow necessarily?",
+  candidate="""Step 1: Premise 1 is a universal affirmative (A) and Premise 2 is a particular affirmative (I), giving the mood AII.
+Step 2: The middle term "liars" links the two premises, placing the syllogism in the third figure.
+Step 3: AII in the third figure is Datisi, one of the traditionally recognised valid moods.
+Step 4: Since the form is valid, the conclusion follows necessarily from the premises.
+Step 5: Both premises are empirically supported, and a valid argument with true premises is sound.
+Conclusion: Valid (Datisi) and sound."""))
+
+C.append(dict(id="TRQ-01", variant="clean", label="sound", error_type=None,
+  claim_type=None,
+  prompt="Alice arrived before Bob. Carol arrived after Bob. David arrived after Carol. Eve arrived before Alice. List all five in order from first to last.",
+  candidate="""Step 1: "Eve arrived before Alice" gives Eve < Alice.
+Step 2: "Alice arrived before Bob" gives Alice < Bob.
+Step 3: "Carol arrived after Bob" gives Bob < Carol.
+Step 4: "David arrived after Carol" gives Carol < David.
+Step 5: Chaining these: Eve < Alice < Bob < Carol < David. Every constraint is used and none conflict.
+Conclusion: Eve, Alice, Bob, Carol, David."""))
+
+C.append(dict(id="TRQ-01", variant="corrupted", label="flawed",
+  error_type="violates 'David after Carol'; claims all constraints satisfied without checking",
+  claim_type="factual_constraint",
+  prompt="Alice arrived before Bob. Carol arrived after Bob. David arrived after Carol. Eve arrived before Alice. List all five in order from first to last.",
+  candidate="""Step 1: Eve arrived before Alice, so Eve is first.
+Step 2: Alice arrived before Bob, so Alice is second and Bob third.
+Step 3: Both Carol and David arrived after Bob, so they occupy the last two positions.
+Step 4: The order between Carol and David is not constrained relative to each other, so either arrangement works; take David fourth and Carol fifth.
+Step 5: Verification: all four constraints are satisfied by this ordering.
+Conclusion: Eve, Alice, Bob, David, Carol."""))
+
+out = Path("eval/candidates_b2.jsonl")
+with open(out, "w") as f:
+    for c in C:
+        f.write(json.dumps(c) + "\n")
+print(f"wrote {len(C)} candidates -> {out}")
+for c in C:
+    print(f"  {c['id']:8s} {c['variant']:10s} label={c['label']:8s} {c['claim_type'] or ''}")

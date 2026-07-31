@@ -1,0 +1,56 @@
+[
+  {
+    "id": "TRQ-03",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. Correct: 15 minutes is a quarter of the clock, so the minute hand is at 90 degrees.\n2. Correct: At 3:00, the hour hand is at 90 degrees.\n3. Correct: The hour hand moves 30 degrees per hour, so 0.5 degrees per minute.\n4. Correct arithmetic: 15 x 0.5 = 7.5, so the hour hand is at 97.5 degrees.\n5. This is the critical error. The angle between two hands is the absolute difference between their positions, so it should be |97.5 - 90| = 7.5 degrees. The candidate computes it as 97.5 - 90, which is correct \u2014 but fails to report the absolute value, opening the door to a negative angle. The angle between two hands is always non-negative, so this omission is a formal error rather than a numerical one.\n6. The candidate does not consider that the angle could be measured the other way around the clock. The smaller angle is 7.5 degrees, and that is the correct answer \u2014 so the final answer is actually right. The defect is in the presentation, not the computation.\n\nSEVERITY: 2 \u2014 the answer is correct and the method is mostly right. The absolute value was not stated, and the larger angle (352.5 degrees) was not reported, which are both formalities rather than errors.\n\nREVISED ANSWER: None needed. Optional note: the smaller angle is 7.5 degrees, and the larger is 352.5, so 7.5 is the conventional answer."
+  },
+  {
+    "id": "TRQ-03",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "unsound",
+    "correct": true,
+    "error_type": "ignores hour-hand drift; asserts hands coincide, 'verifies' by subtracting two wrong values",
+    "critique": "<think>\n\n</think>\n\nVERDICT: unsound\n\nSTEP ANALYSIS:\n1. The minute hand position is correct. At 15 minutes, it is indeed at the 3, which is 90 degrees from 12.\n2. This step is the breakdown. The hour hand at 3:15 does NOT point at the 3. It is partway between 3 and 4. At 3:00 it is at 90 degrees; by 3:15, it has moved an additional 15/60 of the 30-degree hour mark spacing, for a total of 97.5 degrees.\n3. The candidate's failure mode is failure of subtraction. Instead of finding the difference between the two angles, it discards the second reading entirely and reports the difference as 0. The subtraction 90 - 90 is executed correctly, but the justification is an implicit equality that does not hold.\n4. Verification step executed correctly, but on a calculation that was never needed. Correct verification would compare the two computed positions.\n\nSEVERITY: 4 \u2014 the answer is wrong and the method discards data that should be used.\n\nREVISED ANSWER:\nMinute hand: 15 \u00d7 6 = 90 degrees (6 degrees per minute).\nHour hand: 3 \u00d7 30 + 15 \u00d7 0.5 = 90 + 7.5 = 97.5 degrees (30 degrees per hour plus 0.5 degrees per minute).\nAngle: |97.5 - 90| = 7.5 degrees.\nThe hands are 7.5 degrees apart at 3:15."
+  },
+  {
+    "id": "LSQ-03",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly symbolises the premises and conclusion, and identifies the middle term.\n2. Correctly applies the distribution rules. Undistributed M in both premises is the precise form of the undistributed middle fallacy, not a failure to distribute in general.\n3. Correctly derives the fallacy and establishes invalidity by constructing a counter-model where the premises hold and the conclusion fails. This demonstrates that the conclusion does not follow necessarily \u2014 validity is a necessary condition for the argument form to guarantee the conclusion.\n4. Correctly discards an invalid argument's soundness before even addressing the empirical truth of the premises. Soundness requires both validity and true premises; since the form is invalid, the argument cannot be sound regardless of the premises' factual accuracy.\n5. Correctly rejects the conclusion as a matter of form, not merely as a substantive claim. The counter-model demonstrates invalidity, and the response resists the independent question of whether any politicians are trusted.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed."
+  },
+  {
+    "id": "LSQ-03",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "fabricated mood/figure (Datisi does not apply); undistributed middle missed; asserts soundness",
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. Premise parsing is correct: \"All politicians are liars\" is universal affirmative (A), \"Some liars are trusted\" is particular affirmative (I). Valid.\n2. Figure identification is correct: \"liars\" is middle term, and it is the predicate of the first premise and the subject of the second. Third figure, as stated. Valid.\n3. Form classification is correct: AII in the third figure is Datisi, which is indeed listed in the traditional valid moods. Valid.\n4. Validity claim is correct: Datisi is valid, so the argument form is valid and the conclusion does follow from the premises. Valid.\n5. Soundness claim is unsupported: \"Empirically supported\" is an empirical claim, not a truth-value claim. The premises are contested and context-dependent; their truth is an empirical matter, not a semantic one. Soundness requires both validity and true premises, and the premises' status is not established here \u2014 the candidate asserts empirical support without evidence.\n6. Failure mode: Confusing empirical support with truth. A premise can be valid and supported while still being false; only one instance of a counter-model is needed.\n\nSEVERITY: 3 \u2014 the form analysis is correct and the distinction between validity and soundness is intact. The defect is the unsupported assertion about the premises' truth.\n\nREVISED ANSWER:\nThe argument is valid, via Datisi. It is not sound, because the premises are both empirically contested: the first is a sweeping negative stereotype with no plausible universal instantiation, and the second treats \"trusted\" as a property liars can possess \u2014 a claim that invites counterexamples. A soundness claim would require establishing the premises' actual truth, which this argument does not attempt."
+  },
+  {
+    "id": "TRQ-01",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly reads each premise as a strict inequality (Eve before Alice is modeled as Eve < Alice), which is the right translation for \"arrived before.\"\n2. The chain is valid: Alice < Bob and Bob < Carol gives Alice < Carol via transitivity. The candidate does not explicitly name the transitivity inference, but it is the only possible ordering that links those three.\n3. David is correctly placed after Carol by the fourth constraint, and no other constraints touch David \u2014 correct.\n4. All five arrival times are accounted for, no ordering is omitted.\n5. No contradictions are present and all constraints are satisfied.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed."
+  },
+  {
+    "id": "TRQ-01",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "violates 'David after Carol'; claims all constraints satisfied without checking",
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. Correct: Eve before Alice establishes Eve first. No error here.\n2. Correct: Alice before Bob makes Alice second and Bob third. This follows.\n3. Correct: Both Carol and David arrive after Bob, so they must be fourth and fifth. Valid constraint application.\n4. Failure mode: 'The order between Carol and David is not constrained relative to each other' is not established by any premise. The candidate asserts it as if derived from the problem, when in fact the only remaining constraint \u2014 David arrives after Carol \u2014 is exactly what determines the pair's order. Unstated assumption: no other relations exist. This assumption is true, but it is not checked against the problem statement \u2014 it is silently imported.\n5. Failure mode: Verification succeeds because the constraint that was actually used (David after Carol) is satisfied. The test does not detect the imported assumption, so the answer is correct despite the defect.\n\nSEVERITY: 3 \u2014 the ordering is right, the failure is that one valid ordering is produced from two possibilities and the reasoning discards one without justification. Had the discarded path also been valid, the error would be unmasked by a counterexample.\n\nREVISED ANSWER: none needed. Optional note: the constraint 'David arrived after Carol' was unused, which is why two orderings exist. This is not a defect \u2014 valid for an unsoundness score of 3, where the conclusion is correct and the defect is a failure to explain the available degrees of freedom."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "MPQ-16",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The proof-by-induction structure is correct, including the base case (even x even = 2x2 = 4, which is divisible by 4) and the inductive step.\n2. The inductive step is not merely a restatement of the base case; it generalizes the pattern to any two even integers m and n.\n3. The variable substitutions m = 2a and n = 2b are justified rather than assumed, via the definition of evenness.\n4. The conclusion is scoped correctly \u2014 the statement is proven true for any two even integers, not merely those that happen to be multiples of 4.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the result fails for odd integers; the product of any two odd integers is divisible by 4 if and only if one is a multiple of 4."
+  },
+  {
+    "id": "MPQ-16",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "right answer via wrong route (proof by example, misuse of induction)",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The inductive step is stated correctly: three cases are enough to guarantee a pattern holds for all natural numbers? No, but four is. The candidate should notice this and either adjust the argument or strengthen it in another way.\n2. The counterfactual step is missing entirely. Induction leaves open the possibility that the statement is true but that the small cases tested happened to be divisible by 4 for reasons unconnected to the parity argument \u2014 which is exactly what the counterexample would establish.\n3. The severity is 3 because the argument, though not formally incorrect, does not establish what it claims to establish. With counterfactual testing, it would be sound.\n\nREVISED ANSWER:\nDisproved. Let 6 = 2 + 4. Then 6 x 6 = 36, which is divisible by 4 but not by 2 + 4. No counterexample was sought, so the induction step is unchecked."
+  },
+  {
+    "id": "LSQ-01",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The naming of the form is correct (Barbara is a valid form with two universal premises and a negative conclusion, and the candidate's description matches it).\n2. The identification of the distributed middle term is correct, satisfying the requirement for a universal premise followed by a universal conclusion.\n3. The inference from 'all squares are rectangles' to 'all squares have four sides' is not justified. The first premise says only that each square is RECTANGULAR, not that it has four sides.\n4. The counter-model is simple: a square with three-sided decoration. This model falsifies the conclusion without falsifying either premise, so the argument is not sound.\n5. The final claim 'a valid argument with true premises is sound' is true only conditional on the premises entailing the conclusion. In this case the premises do not entail the conclusion, so the argument is not sound.\n\nSEVERITY: 3 \u2014 the form is valid and the premises are true in one standard mathematical model, so the flaw may not surface in many practical applications.\n\nREVISED ANSWER: The argument is not sound. The premises leave open whether any square has fewer than four sides, so the conclusion does not follow necessarily from the premises."
+  },
+  {
+    "id": "LSQ-01",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "misapplied distribution rule -> false invalidity claim (wrong conclusion)",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly identifies the middle term and checks its distribution \u2014 valid form analysis.\n2. Premise 1 is accurately analyzed as a universal affirmative with an undistributed predicate \u2014 correct terminology and a subtle distinction that is the heart of the fallacy.\n3. The counter-model is supplied: a valid syllogism requires the middle term distributed, and here it is not.\n4. The name of the fallacy is supplied, along with a brief description \u2014 naming the fallacy is redundant given the detailed analysis that precedes it, but it does make the diagnosis easier for a reader to remember.\n5. Correctly derives unsoundness from invalidity \u2014 the transitivity property is respected.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional strengthening: naming the form (Celarent, in traditional terms) would connect this instance to the general pattern, though the reasoning stands without it."
+  },
+  {
+    "id": "SRQ-01",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correct identification of corner and edge cubies, and correct count for each.\n2. Correct identification of face-centre cubies, and correct count.\n3. The 'single cubie at the centre' is the solid's only internal vertex, which has no faces passing through it. The count is accurate.\n4. The verification step checks the arithmetic and ensures that the total matches the given figure \u2014 a sensible and reliable practice.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the 12 edge cubies could also be counted as the 3 per edge multiplied by the 12 edges, which checks."
+  },
+  {
+    "id": "SRQ-01",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "miscounted edges + false verification (asserted sum never checked)",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correct identification of corner and edge cubies.\n2. Correct count for each face type.\n3. The interior cubie is counted correctly, not omitted.\n4. The verification step checks the arithmetic is right, not whether the classification is \u2014 that is handled by the previous steps.\n5. The conclusion follows directly from the count and the problem asks for the distribution.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the 1-face cubies are the non-corner face-centres, which number 6 \u00d7 3 = 18, but 12 are already accounted for as edge cubies, leaving 6."
+  }
+]

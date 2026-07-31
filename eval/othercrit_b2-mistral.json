@@ -1,0 +1,56 @@
+[
+  {
+    "id": "TRQ-03",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The initial calculation of the minute hand's position is correct \u2014 15 minutes is 15/60 of a full turn, which is 0.25.\n2. The observation that the hour hand also reaches 90 degrees at the top of the hour is also correct.\n3. The rate of 30 degrees per hour is correct, and the calculation of the hour hand's movement in step 4 is correct on its own terms \u2014 15 minutes is 15/60 of an hour, so the hour hand moves 15/60 x 360 = 75 degrees. That leaves 360 - 75 = 285 degrees until the minute hand catches up, which is 285/30 = 9.5 hours. Since the problem states it's 3:15, that part is accurate.\n4. The problem, however, asks for the angle between the hands at 3:15, not for how much the hour hand has to move. The candidate seems to have confused the initial position of the hour hand with its final position after 15 minutes.\n5. The final answer is off by 180 degrees. At 3:15 the hour hand is 180 - 90 = 90 degrees behind the minute hand, not 7.5 degrees ahead.\n\nSEVERITY: 4 \u2014 the answer is off by 180 degrees, and the reasoning that led to it is tangled.\n\nREVISED ANSWER: 90 degrees. The hour hand is 180 - 90 = 90 degrees behind the minute hand at 3:15, not ahead."
+  },
+  {
+    "id": "TRQ-03",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "unsound",
+    "correct": true,
+    "error_type": "ignores hour-hand drift; asserts hands coincide, 'verifies' by subtracting two wrong values",
+    "critique": "VERDICT: unsound\n\nSTEP ANALYSIS:\n1. The candidate correctly identifies that the minute hand points to 3 at 15 minutes, which is indeed 90 degrees from the 12.\n2. The candidate then asserts without proof that the hour hand also points to 3 at 3:15. This is false: the hour hand points to 3 at every 3-hour interval, not just at 3:15.\n3. The candidate's verification step is a restatement of the error in step 2. It does not verify anything; it repeats the same 90 - 90 = 0 calculation, which is only correct for the minute hand, not for the hour hand.\n4. Failure mode: a false coincidence between two independently moving parts. The hands do not coincide at 3:15; the hour hand is halfway between 3 and 4.\n\nSEVERITY: 4 \u2014 the answer is off by 180 degrees, and the verification step actually confirms the error rather than the correctness of the calculation.\n\nREVISED ANSWER: About 10.8 degrees. The minute hand is 15 degrees away from 12, and the hour hand is 3 hours 15 minutes divided by 12 hours = 0.125 of a full rotation past 12, which is about 10.8 degrees."
+  },
+  {
+    "id": "LSQ-03",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly extracts the premises and the conclusion, and states the form of the argument explicitly \u2014 universal affirmative, particular affirmative, and particular negative, respectively.\n2. Identifies the middle term (liars) and shows it is undistributed in both premises. This is the fallacy this argument form routinely commits.\n3. Supplies a counter-model where both premises hold and the conclusion fails. This demonstrates that the conclusion does not necessarily follow, which is the severest criticism available.\n4. Explicitly names the formal structure (syllogism), which is appropriate for a validity question.\n5. Correctly infers invalidity and unsoundness from the single counter-model.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional strengthening: naming the form (Celarent, in traditional terms) would connect this instance to the general pattern."
+  },
+  {
+    "id": "LSQ-03",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "fabricated mood/figure (Datisi does not apply); undistributed middle missed; asserts soundness",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The formal analysis is correct: AII in the third figure is Datisi, and Datisi is traditionally recognized as valid.\n2. The inference from 'valid' to 'sound' is the weakness. Soundness requires not only validity, but also that at least one premise be true. Since the conclusion is a negative counterfactual, the argument is only as strong as its worst-case premise \u2014 if the second premise is false, the conclusion follows necessarily only because the first premise is false.\n3. The counter-model is the standard one for counter-intuitively structured arguments: politicians are those who seek office through speech, and liars are those who lie habitually. Both premises are true, and the conclusion fails.\n4. Failure mode: formality-as-substitute-for-truth. Validity is a necessary condition for soundness, but it is not sufficient when the premises are empirical claims.\n\nSEVERITY: 3 \u2014 the reasoning is correct enough to mislead. A Datisi is valid, and both premises are plausible; the trap is that the conclusion does not follow necessarily from the truth of either premise.\n\nREVISED ANSWER: The argument is not sound. The second premise ('some liars are trusted') is the bottleneck. If that premise is true, the conclusion is at best a weak necessity \u2014 many liars are not trusted, and the trusted few are not necessarily politicians. If the premise is false, the conclusion follows necessarily only because the first premise is false. A Datisi with a false premise is not sound, even though it is valid."
+  },
+  {
+    "id": "TRQ-01",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly parses 'Eve arrived before Alice' as Eve < Alice. Valid constraint.\n2. Correctly parses 'Alice arrived before Bob' as Alice < Bob. Valid constraint.\n3. Correctly parses 'Carol arrived after Bob' as Bob < Carol. Valid constraint.\n4. Correctly parses 'David arrived after Carol' as Carol < David. Valid constraint.\n5. The chain Eve < (Alice) < Bob < (Carol) < David is formed correctly by transitivity. No constraints are violated and all are used.\n6. Conclusion accurately reports the order inferred.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional step numbering for clarity?"
+  },
+  {
+    "id": "TRQ-01",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "violates 'David after Carol'; claims all constraints satisfied without checking",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly identifies Eve's arrival before Alice as the starting point \u2014 validly extracting the most constraining information first.\n2. Alice's arrival before Bob is correctly interpreted as Alice arriving before Bob, not as Alice and Bob arriving together \u2014 this is the right relation between them.\n3. Bob's arrival after Eve is stated explicitly, blocking any confusion with the Alice-before-Bob relation.\n4. Carol and David's arrival after Bob are correctly grouped, and the order between them is correctly identified as unconstrained \u2014 this is the right relation between them.\n5. Verification step checks that all constraints are satisfied by the proposed ordering \u2014 a reliable method for avoiding omitted-middle syndrome.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Order is correct and the reasoning provides it without resorting to trial-and-error."
+  }
+]

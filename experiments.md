@@ -183,3 +183,23 @@ models' reasoning as well is untested and is the next study.
 
 **Annotated traps.** Only 4 of 40 rows carry a trap_type. On those 4 the tuned
 critic flagged every one with a non-endorsing verdict. n=4.
+
+## Pre-registered prediction: other-critique anchoring probe (batch 2)
+
+Pilot (n=6, batch 1) gave tuned-Qwen 6/6 and tuned-Mistral 3/6. Reading the
+Mistral critiques suggested a mechanism rather than a knowledge gap:
+verification-by-paraphrase. On LSQ-01 it endorsed both a candidate claiming the
+middle term was distributed and a candidate claiming it was undistributed. On
+SRQ-01 it accepted a verification step that asserted a sum it never computed.
+
+Prediction recorded before running batch 2:
+1. tuned-Mistral's misses will concentrate on corrupted variants, not clean ones.
+2. tuned-Qwen will not show the same concentration.
+3. If tuned-Mistral catches TRQ-03-corrupted (a checkable arithmetic falsehood:
+   hands coincide at 3:15, "verified" as 90 - 90 = 0), the anchoring hypothesis
+   is weakened -- a paraphrasing critic should endorse it.
+4. LSQ-03-corrupted asserts a fabricated mood ("Datisi") for a form it does not
+   fit. Endorsement indicates deference to confident terminology.
+
+Batch 2 candidates: TRQ-03, LSQ-03, TRQ-01 (paired clean/corrupted, n=6).
+Labels known by construction. Decoding: EVAL_GREEDY=1, max_new 1200.
