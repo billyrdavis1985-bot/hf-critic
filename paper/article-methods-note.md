@@ -12,9 +12,15 @@ part is which.
 
 The format results are unaffected. `verdict_rate` and `structure_rate` are
 direct string checks on the model's output — no proxy, no interpretation. The
-deltas there are large: base Qwen3-8B produced the required contract on 52.5% of
-holdout items, and the fine-tune took that to 95%. Mistral-7B-Instruct-v0.3
-already complied at 100% from the prompt alone, before any fine-tuning.
+deltas there are large: base Qwen3-8B emitted a parseable verdict on 52.5% of
+holdout items and the required section structure on 50%, and the fine-tune took
+both to 95%. Mistral-7B-Instruct-v0.3 scored 1.000 and 0.950 on the same two
+metrics before any fine-tuning at all.
+
+One caveat even here: `verdict_rate` checks only that the literal string
+"verdict:" appears, not that the value is one of sound/flawed/unsound. One
+holdout item parsed as "model". The metric is a proxy for contract compliance
+too, just a much tighter one than the metric discussed below.
 
 That contrast is the finding I'd still stand behind: **whether a fine-tune is
 needed for format compliance depends on the base model, not on the task.** If
