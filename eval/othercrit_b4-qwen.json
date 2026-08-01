@@ -1,0 +1,74 @@
+[
+  {
+    "id": "MPQ-03",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. The base case is correct and matches the required form.\n2. The inductive hypothesis is stated precisely over the correct domain.\n3. The inductive step correctly applies the hypothesis to the next case and manipulates the resulting expression to match the formula. The algebra is executed right.\n4. The transition from specific case to general conclusion is properly qualified throughout \u2014 each step refers to a particular n, and the final conclusion is scoped over all positive integers.\n5. No hidden premises are asserted, and no step depends on a property of integers beyond what is given.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the step where (k/2 + 1) is simplified to (k+2)/2 is arithmetic rather than inductive, and such steps may be error-prone. Explicitly writing the common denominator \u2014 (k/2 + 2/2) \u2014 would make the equality more transparent."
+  },
+  {
+    "id": "MPQ-03",
+    "variant": "clean-terse",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. The base case is correct and is stated clearly.\n2. The inductive hypothesis is stated correctly, but the binding is loose. 'Assume 1+...+k = k(k+1)/2' names the specific statement S(k), which is required for the step to be readable.\n3. The inductive step computes S(k+1) as if by substitution: S(k) + (k+1) = [k(k+1)/2] + (k+1). This is algebra, not induction \u2014 the step succeeds regardless of whether S(k) holds.\n4. The candidate asserts the conclusion 'by induction' despite the step bearing no conditional structure. Induction requires the step S(k) \u21d2 S(k+1); the candidate provides only S(k) \u2227 S(k+1) for a single k derived via algebra.\n5. Failure mode: The step is executed correctly, and the conclusion is true, so the defect is structural, not computational. The argument as written does not parse as induction.\n\nSEVERITY: 3 \u2014 the step succeeds and the result is correct, but the step does not require induction and the proof does not establish it.\n\nREVISED ANSWER:\nBase case: n=1, 1 = 1(2)/2 \u2014 holds.\nInductive step: Assume S(k), i.e., 1+2+...+k = k(k+1)/2. Then S(k+1) = S(k) + (k+1) = [k(k+1)/2] + (k+1) = (k+1)(k+2)/2, which is the formula at k+1. By induction, S(n) holds for all n \u2265 1.\n\nThis version separates the algebraic computation from the inductive step, and the step is now correctly conditional on S(k)."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correct case distinction. The division into even and odd is exhaustive and separates the integers cleanly \u2014 valid.\n2. Even case succeeds. The substitution n = 2k and squaring yields 4k\u00b2, which is 0 mod 4 \u2014 correct.\n3. Odd case succeeds. The expansion (2k+1)\u00b2 = 4(k\u00b2 + k) + 1 is algebraically correct, and the remainder 1 mod 4 is extracted properly \u2014 correct.\n4. Coverage and exhaustiveness noted. The candidate explicitly states that the cases cover all integers and produce only 0 or 1, which closes the argument rather than leaving it open.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument also shows that 0 and 1 are the only possible remainders, which strengthens the conclusion beyond mere proof."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "clean-informal",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. The case split is complete and covers the entire universe of integers. Evens and odds are exhaustive and disjoint.\n2. The algebra for both cases is correct. The even case correctly reduces to 4k\u00b2, which is 0 mod 4. The odd case expands to 4(k\u00b2 + k) + 1, which is 1 mod 4.\n3. No hidden premises imported. The argument uses only the definitions of even/odd and the distributive property.\n4. The conclusion is stated as a fact, not a conditional \u2014 the question asked to prove a universal statement, and this succeeds.\n5. No gaps, no overlaps, no counterexamples exist in the range checked.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the disjunction is exclusive, because no integer is both even and odd."
+  },
+  {
+    "id": "MPQ-06",
+    "variant": "clean-factoring",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. The factorization is correct and proceeds without error.\n2. The restatement of the product as three consecutive integers captures the factorization and is accurate.\n3. The claim that 'among any three consecutive integers at least one is even' is true but does not quite follow from the fact that they are consecutive \u2014 it is the stronger claim 'exactly one is even' that is false. Three consecutive integers contain either one or three even numbers, depending on whether the first is even or odd. The candidate's phrasing ('at least one') is true but does not distinguish this case.\n4. The claim that 'among any three consecutive integers exactly one is divisible by 3' is true and follows from the division algorithm: one of any three consecutive numbers must be congruent to 0 mod 3.\n5. The argument correctly combines the two divisibility conditions using the coprime property of 2 and 3. Since 2 and 3 are coprime, a number divisible by both is divisible by 6.\n6. The conclusion is correct and follows from the reasoning.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the failure mode of step 3 \u2014 the overclaim about evenness \u2014 is a good candidate for a counterexample. If the candidate asserts 'exactly one is even' instead of 'at least one', that statement is false, and a single counterexample (n = 2: 1\u00d72\u00d73 = 6, which has one even; n = 3: 2\u00d73\u00d74 = 24, which has two even) would reveal it. The true statement ('at least one is even') is also true for three consecutive integers, so the argument survives but only because the false step does not assert a property that is actually false."
+  },
+  {
+    "id": "MPQ-06",
+    "variant": "clean-exhaustive-residues",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. The reduction to n mod 6 is correct and efficient, avoiding unnecessary case proliferation.\n2. The computations are accurate, and each result is indeed divisible by 6.\n3. The argument is complete: residue coverage is stated explicitly, no exceptions are overlooked.\n4. No hidden premises are asserted, and the conclusion is scoped precisely over all integers.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: This specific case admits a more general proof via factoring \u2014 n\u00b3 - n = n(n-1)(n+1), which is the product of three consecutive integers, hence divisible by 2 and 3, and therefore by 6. The candidate's method is equally valid and demonstrates understanding of modular reduction, a distinct strength."
+  },
+  {
+    "id": "LSQ-02",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly symbolizes the premises and conclusion, using consistent notation. No hidden variables or misread operators.\n2. Accurately converts the first premise. Recognizes that 'No P are M' (E proposition) converts simply to 'No M are P' \u2014 valid transformation.\n3. Correctly arranges the premises and identifies the figure and mode: EAE-1 (Celarent). This is a standard syllogistic form, and the conversion is stated rather than assumed.\n4. References the traditional validity of Celarent. While modern logic would derive this via contraposition and the transitivity of 'no,' the candidate's appeal to the form's historical certification is defensible within syllogistic context.\n5. Asserts soundness based on both validity and the truth of the premises. This is correct: soundness requires validity AND true premises, both of which the candidate establishes.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument succeeds because the premises are true and the form is valid; the conversion of the first premise is the step most easily overlooked."
+  },
+  {
+    "id": "LSQ-02",
+    "variant": "clean-verbose",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly reads the premises as class-level claims and identifies their shared domain, avoiding equivocation on 'mammal' or 'fish.'\n2. The internal reasoning is deduction from containment: M contains S, M and P are disjoint, therefore S and P are disjoint. This derives the conclusion without reference to any particular biological fact, which is exactly how validity is established.\n3. The formalization is accurate. 'No P are M' is the correct E proposition for the first premise, and its conversion to 'No M are P' is valid because E propositions are contraries to themselves \u2014 their subject and predicate terms cannot both be true, so the negative is co-entailed.\n4. Correctly names the form EAE-1 (Celarent) and notes that the middle term M is distributed in the negative premise, which satisfies the traditional requirement for a valid syllogism.\n5. Distinguishes validity from soundness precisely. Both premises are in fact true, so the argument is sound.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument succeeds because the premises are not merely true but also disjoint in a way that makes the conclusion entailed rather than merely likely. This is the distinction a soundness check reveals."
+  }
+]

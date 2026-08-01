@@ -1,0 +1,74 @@
+[
+  {
+    "id": "MPQ-03",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The base case is established correctly \u2014 the algebra is correct and the equation really does reduce to 1 = 1 at that specific value of k.\n2. The inductive hypothesis is stated precisely and the inductive step is executed correctly. The algebra in step 3 is valid and the substitution in step 4 is justified.\n3. The inductive step really does establish that the formula holds at n = k+1 given that it holds at n = k. That is the property induction is designed to establish.\n4. The conclusion draws the correct syntactic and semantic distinctions between the statement proved and the statement asserted by the formula.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the proof generalizes to sums up to any positive power of n, with a different constant term each time."
+  },
+  {
+    "id": "MPQ-03",
+    "variant": "clean-terse",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The base case is correct and explicitly verified. Good.\n2. The inductive step is not. The equation between the two sides of the step is true only when k is even, because the left-hand side would then have 2k+1 terms, which matches the right-hand side. That is the source of the discrepancy; even when the step works, it works for the wrong reason.\n3. The inductive step is also silent on what happens when k is odd. Since the base case holds only for k=1, the induction cannot establish the formula for all n unless k can be odd.\n4. Failure mode: the candidate reached the correct conclusion by lucky rather than by design. Induction proves nothing unless the step does; without a genuinely recursive argument, the claim reduces to verifying a few cases by hand.\n\nSEVERITY: 3 \u2014 the formula is true and the step as written makes it look proven, but the actual verification requires noting that k(k+1)/2 + (k+1) = (k+1)(k+2)/2 only when k is even, which the induction does not notice.\n\nREVISED ANSWER:\nAdd an if-then clause to the inductive step: if k is even, the step as written holds; if k is odd, add a term (k+1)/2 to the left-hand side to restore balance. With that adjustment, the step goes through and the induction reaches the correct conclusion."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The step-by-step approach is systematic and covers all cases explicitly, as the question requires.\n2. The even and odd cases are handled correctly. The even case is multiplied by 4, which leaves a 0, and the odd case adds 1, which also leaves a 0 or 1.\n3. The language is precise and the conclusion is correctly scoped to the original statement. No counter-example exists, so the proof is by contradiction.\n4. The reasoning is free of arithmetic errors and the conclusion follows directly from the work done in the steps.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the result generalizes to n^2 congruent to 0 or 1 mod 8 with similar case analysis, but the question only asks for mod 4."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "clean-informal",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The first step is a misfire. 'Even' and 'odd' are residue classes modulo 4, and the distinction is whether the number is divisible by 2 \u2014 that is whether n is 2k or 2k+1. The candidate's definition includes everything, which would include numbers divisible by 4, like 4 and 16, which should give remainder 0, but are not handled here.\n2. The second step is correct for even numbers, and lands the right conclusion.\n3. The third step is also correct for odd numbers, and lands the right conclusion.\n4. The fourth step is a false positive. It should be 'n divided by 4 leaves remainder 0 or 1; check which parity n is in to decide which case applies', which would require examining n explicitly. As written, it claims to cover 'nothing else to check', but that cannot be true because the parity of n determines which step applies, and that is not checked.\n\nSEVERITY: 3 \u2014 the answer is right for odd and even numbers individually, but the case analysis is not exhaustive, and the fourth step falsely claims to be.\n\nREVISED ANSWER:\nStep 1: Factor n into its even and odd parts. Let e = n divided by 4, and r = n mod 4.\nStep 2: If r is 0, then n is a multiple of 4, so n squared is 0 (mod 4).\nStep 3: If r is 1, then n is 1, 3, 5, etc mod 4. Each of those squared leaves remainder 1.\nStep 4: If r is 2 or 3, then n is 2, 6, 10, etc mod 4. Each of those squared leaves remainder 0.\nStep 5: If r is 0, then e is the part before the last, so e squared is 0, 1, 4, or 9. Each of those squared leaves remainder 0 or 1.\n\nConclusion: n squared is 0 or 1 (mod 4). True."
+  },
+  {
+    "id": "MPQ-06",
+    "variant": "clean-factoring",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly factors n^3 - n using the difference of two squares formula, which is the right approach for this problem.\n2. Identifies the result as a product of three consecutive integers \u2014 valid and precise language.\n3. Correctly observes that at least one of three consecutive integers is even, which is enough to make the product divisible by 2.\n4. Correctly observes that exactly one of three consecutive integers is divisible by 3, which is enough to make the product divisible by 3.\n5. Correctly applies the multiplicative property of coprime numbers: if a number is divisible by both 2 and 3, it is divisible by 6.\n6. No dropped premises, no overclaiming, conclusion follows directly from steps taken.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument generalizes to any triple of consecutive integers, and can be extended to higher powers using the difference of k squares formula."
+  },
+  {
+    "id": "MPQ-06",
+    "variant": "clean-exhaustive-residues",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The candidate correctly identifies that n^3 - n is a quadratic function, and that the value modulo 6 depends only on n modulo 6. This allows reducing the problem from 120 cases to 6.\n2. The case analysis is executed cleanly. Each of the six residues is computed exactly once, and the result is confirmed to be divisible by 6. No case is omitted, and no case is erroneously repeated.\n3. The generalization from the cases to the property is justified rather than assumed. Since the residues are exhaustive and each is divisible by 6, the same must hold for every integer n.\n4. No arithmetic steps are omitted, and no steps are performed that are not necessary. The reasoning is tight and the conclusion follows directly.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument generalizes to n^3 - 3n^2 + 3n - n = (n-1)n^2 - n^3, which is divisible by 6 for any integer n."
+  },
+  {
+    "id": "LSQ-02",
+    "variant": "clean-standard",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The naming of the form is correct, and the syntactic reduction in Step 2 is valid. Well done.\n2. The inference from 'no P are M' and 'all S are M' to 'no S are P' is justified by the premise that S = whales. Without that premise the argument form is indeed invalid \u2014 it reduces to 'no P are M, therefore no P are P', which is unsound.\n3. The counter-model is not supplied, but it exists: let S = human beings, M = mammals, P = fish. Both premises hold and the conclusion fails.\n4. 'Sound' is only earned if the third premise \u2014 that S = whales \u2014 is itself justified. The candidate does not notice that the validity of the form depends on the specific interpretation of the middle term.\n5. Failure mode: a formal system that allows a syntactic proof of validity does not by itself establish the soundness of the argument. The soundness requires that the premises be true, and that the form be truth-preserving \u2014 and truth-preservation depends on the specific interpretation of the terms.\n\nSEVERITY: 3 \u2014 validity is established correctly but the candidate does not notice that the validity of the form depends on the specific interpretation of the middle term.\n\nREVISED ANSWER: The argument is valid only under the premise that the subject term S refers to whales. Without that premise the form is unsound. With it, the conclusion follows by EAE and the premises are true, so the argument is sound."
+  },
+  {
+    "id": "LSQ-02",
+    "variant": "clean-verbose",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly extracts the premises and their quantifiers. This is the basis for any formal analysis.\n2. Correctly infers the relation between whales, mammals, and fish that makes the counter-intuitive conclusion possible. Without this step the argument would not be valid.\n3. Formally names the pattern as Celarent and verifies the distribution requirement. This is the decisive step for validity: distribution of the middle term is the necessary condition for any form to be valid.\n4. Explicitly separates validity from soundness, and affirms soundness only after the premises are true. This is the distinction the question tests.\n5. The final conclusion is accurate on both the formal and the substantive level.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional strengthening: naming the counter-model (e.g., taking 'whale' to mean 'fish') would block any challenge to the argument's validity, though it would not affect the soundness assessment."
+  }
+]

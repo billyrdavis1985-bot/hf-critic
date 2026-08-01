@@ -203,3 +203,53 @@ Prediction recorded before running batch 2:
 
 Batch 2 candidates: TRQ-03, LSQ-03, TRQ-01 (paired clean/corrupted, n=6).
 Labels known by construction. Decoding: EVAL_GREEDY=1, max_new 1200.
+
+## Pre-registered prediction: verification-checking probe (batch 3)
+
+Batch 2 falsified the broad anchoring hypothesis -- tuned-Mistral caught both a
+fabricated syllogism mood ("Datisi") and a false arithmetic verification
+(90 - 90 = 0). A narrower pattern survived. Across batches 1-2, all three
+candidate verification steps behaved the same way:
+
+  SRQ-01 "the counts sum to 27 as required"    (no work shown) -> Mistral accepted
+  TRQ-01 "all four constraints are satisfied"  (no work shown) -> Mistral accepted
+  TRQ-03 "90 - 90 = 0, confirming alignment"   (work shown)    -> Mistral caught
+
+Refined hypothesis: tuned-Mistral does not re-execute verification claims that
+merely assert success, but does evaluate verification steps that display a
+computation. tuned-Qwen re-executes in all three cases.
+
+Batch 3 holds question and injected error fixed and varies only the final step
+(asserted vs shown): MPQ-03, MPQ-04, SRQ-03, n=6, all corrupted.
+
+Prediction recorded before running:
+1. tuned-Mistral catches >= 2 of 3 "shown" variants and <= 1 of 3 "asserted".
+2. tuned-Qwen shows no gap between the two styles.
+3. If Mistral catches asserted and shown at similar rates, the refined
+   hypothesis is falsified too and the batch 1-2 pattern was coincidence.
+
+Known confound: the "shown" variants contain more text, so any detection
+difference could reflect content volume rather than verification-checking.
+
+## Pre-registered prediction: false-alarm probe (batch 4)
+
+Batch 3 falsified the refined hypothesis: tuned-Mistral's asserted/shown rates
+were identical (1/3 vs 1/3) and every pair agreed, so question identity drove
+the verdicts and the batch 1-2 pattern was confounded. Mechanism is unknown and
+no third hypothesis is offered from the same evidence.
+
+Cumulative n=18: tuned-Qwen 17/18 (corrupted recall 12/12, clean 5/6);
+tuned-Mistral 9/18 (corrupted recall 5/12 = 0.42, clean 4/6).
+
+Qwen is at ceiling on corrupted detection, so the informative quantity is now
+the FALSE ALARM rate on correct reasoning -- operationally decisive, since a
+gate that rejects valid work gets disabled. Batch 4 is all-clean (n=8), four
+questions in two styles each, to test whether presentation drives rejection.
+
+Prediction recorded before running:
+1. tuned-Qwen false-alarms on at least one terse or informal variant, and its
+   false alarms concentrate in those styles rather than standard/verbose.
+2. Any variant rejected on notation or presentation while the critique concedes
+   the answer is correct counts as a calibration failure, as on TRQ-03-clean.
+3. If both models accept all 8, false alarms are rarer than TRQ-03 suggested and
+   the AURION gate risk is lower than feared.

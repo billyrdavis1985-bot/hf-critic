@@ -1,0 +1,56 @@
+[
+  {
+    "id": "MPQ-03",
+    "variant": "corrupted-asserted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "inductive step algebra: (k+1)(k+3)/2 should be (k+1)(k+2)/2",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The base case is established correctly \u2014 the algebra is correct and the formula is verified explicitly.\n2. The inductive step is executed by a valid induction invariant: adding a new term and factoring out the term k+1 propagates the invariant.\n3. Verification is mentioned and the algebra is acknowledged as a separate check. This is the right approach: algebraic manipulation is not enough to establish a proof by mathematical induction; the invariant must be shown to propagate.\n4. No counter-examples are discovered in the base case or the inductive step.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional verification could be added by computing the formula for small n and checking that it agrees with the standard expansion 1+2+...+n = n(n+1)/2."
+  },
+  {
+    "id": "MPQ-03",
+    "variant": "corrupted-shown",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "inductive step algebra: (k+1)(k+3)/2 should be (k+1)(k+2)/2",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. The base case is established correctly, with a explicit calculation on both sides. No room for error or confusion here.\n2. The inductive hypothesis is stated precisely \u2014 a specific k, and the formula holds for all positive integers up to k. This is the right formulation for mathematical induction.\n3. The inductive step is executed by a valid transformation: adding a term to the sum corresponds exactly to multiplying the right-hand side by (k+1) and adding (k+1). No steps are skipped, and the algebra is correct.\n4. Verification at k=2 is included, with a clear discrepancy identified and resolved. This is the right approach: the inductive step establishes the formula for all k, and verification at a single value of k is the smoke signal that nothing fell between the steps.\n5. The conclusion is scoped correctly \u2014 the formula holds for all positive integers n, with no additional qualifications needed.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional notation: the sum on the left can be written \u03a3_{i=1}^n i, which may be easier to parse in a context where the summation symbol is defined."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "corrupted-asserted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "odd case: 4k^2+4k+1 is 1 mod 4, not 0; also contradicts the stated claim",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The step-by-step approach is sound, and the case distinction is correctly executed.\n2. The even case is handled correctly: n^2 = 4k^2 \u2261 0 mod 4.\n3. The odd case is also handled correctly: n^2 = 4k^2 + 4k + 1 \u2261 0 mod 4.\n4. The verification step is a red herring. It does not remove the flaws; it merely reports them.\n\nSEVERITY: 2 \u2014 the conclusion is true, but the justification is incomplete.\n\nREVISED ANSWER: Add explicit verification for each representative value. For example, n = 1 gives n^2 = 1, which is 0 mod 4; n = 3 gives n^2 = 9, which is 0 mod 4. This removes any doubt about the generality of the result."
+  },
+  {
+    "id": "MPQ-04",
+    "variant": "corrupted-shown",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "odd case: 4k^2+4k+1 is 1 mod 4, not 0; also contradicts the stated claim",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The step-by-step approach is sound, and the case distinction is correctly executed.\n2. The even case is handled correctly: n^2 = 4k^2 is divisible by 4.\n3. The odd case is also handled correctly: n^2 = 4k^2 + 4k + 1 reduces to 4(k^2 + k + 0.25), which is divisible by 4. However, the simplification step hides a precision issue.\n4. The verification step is a good practice, but the choice of n=3 is misleading because it falls in the odd case but the square is divisible by 4 only after adjusting the parity.\n5. The conclusion overstates the result by dropping the equivalent 'or 1' part.\n\nSEVERITY: 3 \u2014 the argument is tight but the parsing of the odd case leaves room for confusion about the exact conditions under which divisibility holds.\n\nREVISED ANSWER:\nFor the odd case, n = 2k + 1. Then n^2 = 4k^2 + 4k + 1. Factoring out 4 gives 4(k^2 + k + 0.25), which is divisible by 4. Therefore, the conclusion 'n^2 \u2261 0 mod 4' is true for all integers n."
+  },
+  {
+    "id": "SRQ-03",
+    "variant": "corrupted-asserted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "unfolding omits the 3m ceiling height; correct answer is sqrt(12^2+19^2)~22.47",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly extracts the problem's dimensions and the positions of the spider and fly.\n2. The unfolding step is valid and leads to a correct calculation. It is the right geometric preliminary for a calculation in a flat geometry that stands in for the curved one.\n3. The verification step is a sensible one and removes doubt.\n4. The conclusion is a straightforward restatement of the result, with no overclaiming and no unsupported extrapolation.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional: the path's curvature on the actual surfaces is greater than in the flat geometry, so the actual distance is longer. The given answer is for the straight-line path in a flattened representation, which makes it easier to compute."
+  },
+  {
+    "id": "SRQ-03",
+    "variant": "corrupted-shown",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "unfolding omits the 3m ceiling height; correct answer is sqrt(12^2+19^2)~22.47",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly extracts the problem's dimensions and the positions of spider and fly.\n2. Formally correct: unfolding the room's geometry flattens it into a right-angled triangle with the legs 12 and 8, which is indeed how a 12x8x3 room is represented on a flat surface.\n3. The straight-line distance between the two corners is calculated correctly, both symbolically and by verification.\n4. Explicitly verifies that this distance is smaller than any other possible path, establishing minimality.\n5. The conclusion is a straightforward restatement of the answer, with no excess baggage.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional step: the path's vertical component is 3, so the fly must climb 3 metres to reach the ceiling corner."
+  }
+]
