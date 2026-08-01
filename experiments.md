@@ -253,3 +253,137 @@ Prediction recorded before running:
    the answer is correct counts as a calibration failure, as on TRQ-03-clean.
 3. If both models accept all 8, false alarms are rarer than TRQ-03 suggested and
    the AURION gate risk is lower than feared.
+
+## Study: other-critique on external reasoning (batches 1-4, n=26)
+
+### Motivation
+
+The published evaluation is a self-critique probe: the holdout stores no
+candidate answer, so the model produces its own reasoning and then critiques it.
+The deployment story is different -- the critics are meant to verify *other*
+models' reasoning. This study tests that directly.
+
+### Design
+
+Candidates are built by controlled corruption rather than generated and then
+labelled. Each question yields a clean trace (correct verdict: sound) and a
+variant with one deliberate, named error (correct verdict: flawed). Labels are
+known by construction, so no hand-labelling is required and the label aligns
+with the critic's stated task -- unlike labelling on final-answer correctness,
+which a trace can satisfy through invalid reasoning.
+
+Questions were drawn from the 160 non-holdout HF-IQR V2 questions, so the
+reserved 40-question holdout and its CI gate stay untouched. Firewall checks:
+prepare_corpus.py never reads the master dataset; seed_examples.jsonl contains
+no question IDs; an 8-word text-overlap scan against the 38 seeds flagged one
+question (MPQ-02), which was excluded.
+
+Harness: scripts/run_other_critique.py reuses eval_critic.run_model and replaces
+only build_critique_prompt, so model loading and decoding match the published
+runs. All runs use EVAL_GREEDY=1 (deterministic) and max_new 1200.
+
+### Results (verdict-word scoring)
+
+n=26: 12 corrupted, 14 clean.
+
+  tuned-Qwen     24/26   corrupted recall 12/12   clean specificity 12/14
+  tuned-Mistral  14/26   corrupted recall  5/12   clean specificity  9/14
+
+tuned-Mistral falls well below the 0.6 recall threshold pre-registered as the
+condition for serving as a verification gate. That conclusion held across all
+four batches.
+
+### Two falsified hypotheses
+
+Both were pre-registered with explicit falsification criteria, and both failed.
+
+1. *Anchoring / verification-by-paraphrase*: tuned-Mistral endorses whatever the
+   candidate asserts. Batch 2 refuted it -- Mistral caught a fabricated
+   syllogism mood ("Datisi") and a false arithmetic verification (90 - 90 = 0),
+   both of which a paraphrasing critic should have endorsed.
+
+2. *Verification-checking*: Mistral accepts verification steps that assert
+   success but evaluates those that show work. Batch 3 held question and error
+   fixed and varied only that final step. Every asserted/shown pair agreed
+   (1/3 vs 1/3), so question identity drove the verdicts and the earlier pattern
+   was confounded. No third hypothesis is offered from the same evidence.
+
+### What the critique text shows
+
+Verdict-level scoring conceals a qualitative difference. On the two clean items
+tuned-Qwen flagged, it identified real defects. On the clean items tuned-Mistral
+flagged, it fabricated them: it claimed an algebraic identity holds "only when k
+is even" (it holds for all k), asserted that even and odd are residue classes
+modulo 4, and supplied a counter-model (humans/mammals/fish) that in fact
+satisfies the argument it was meant to refute. Mistral confabulates in both
+directions -- inventing technical content to endorse flawed reasoning and to
+reject valid reasoning.
+
+### Label correction (disclosed)
+
+MPQ-03-terse was authored as a correct trace but never applies the inductive
+hypothesis: it states the algebraic identity k(k+1)/2 + (k+1) = (k+1)(k+2)/2,
+which is unconditionally true, without establishing that the left side is the
+sum to k+1. It therefore does not exhibit the structure S(k) => S(k+1). The
+label was wrong; the item belongs with the corrupted set.
+
+This correction was made after seeing results, prompted by tuned-Qwen's
+critique. Both scorings are reported. The criterion -- whether the trace applies
+the inductive hypothesis -- is checkable independently of which model raised it.
+
+### Severity gating (the deployment finding)
+
+Re-scoring saved outputs on the SEVERITY field instead of the verdict word:
+
+  threshold >= 3   Qwen recall 12/12, specificity 13/14
+                   Mistral recall  4/12, specificity  9/14
+  threshold >= 4   Qwen recall  3/12, specificity 14/14
+                   Mistral recall  2/12, specificity 13/14
+
+At >= 3 tuned-Qwen loses one false alarm at no cost to recall. The recovered
+item is TRQ-03-clean, which it had marked flawed at SEVERITY 2 while writing
+that the answer was correct. At >= 4 recall collapses: Qwen reserves 4+ for
+severe defects and rates most genuine errors 3.
+
+Conclusion: tuned-Qwen's SEVERITY field is better calibrated than its VERDICT
+word. It separates cosmetic from substantive defects but maps both to "flawed".
+Recommended deployment: read SEVERITY, threshold at 3, ignore the verdict
+string. With MPQ-03 relabelled this gives 13/13 recall and 13/13 specificity.
+
+Thresholding does not rescue tuned-Mistral at any value, because its severity
+ratings decorate fabricated findings.
+
+### Limitations
+
+- n=26, and the errors are hand-constructed. Deliberately injected flaws may be
+  easier to detect than errors models make naturally, so these figures are
+  plausibly an upper bound.
+- The candidate traces were drafted by an LLM (Claude) and verified by the
+  author against the reference solutions. One label was wrong (see above), which
+  bounds how much confidence the remaining labels deserve.
+- Four questions contribute two items each, so items are not independent.
+- Mechanism is unknown. Two hypotheses were falsified; separating candidates
+  would require a design testing several pre-specified alternatives at once.
+- Severity gating was found post hoc on saved outputs. It should be
+  pre-registered and tested on a fresh batch before being relied on.
+
+## Pre-registered prediction: severity gating, out-of-sample (batch 5)
+
+Severity gating was found post hoc by re-scoring saved outputs from batches 1-4.
+Batch 5 tests it on fresh questions never shown to either critic: MPQ-07,
+LSQ-12, TRQ-05, SRQ-05 (MPQ-11 excluded as a duplicate of MPQ-06; SRQ-04 and
+TRQ-04 excluded as underspecified). n=8: four clean, four corrupted.
+
+Rule under test: flag a candidate when SEVERITY >= 3, ignoring the VERDICT word.
+
+Confirmation criterion, recorded before running: the rule confirms if tuned-Qwen
+achieves recall >= 3/4 AND specificity 4/4. Anything less and the post-hoc
+finding did not generalise.
+
+Key item: TRQ-05-clean-cosmetic is arithmetically correct and reaches the right
+answer (10:42, 162 miles) but omits units, AM/PM markers and labels throughout.
+It is the case the rule exists to handle. If tuned-Qwen rates it SEVERITY >= 3,
+the rule breaks regardless of the other seven.
+
+Secondary: tuned-Mistral is predicted to remain below 0.6 recall at any
+threshold, consistent with batches 1-4.

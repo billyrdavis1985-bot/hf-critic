@@ -1,0 +1,74 @@
+[
+  {
+    "id": "MPQ-07",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. The proof method is stated upfront and is appropriate \u2014 contrapositive requires only this much setup.\n2. The transition from 'not divisible by 3' to 'congruent to 1 or 2 mod 3' is correct and needs no further justification; it is the definition of not being divisible by 3.\n3. The two cases are exhausted correctly, and the arithmetic is right: 1\u00b2 \u2261 1, 2\u00b2 \u2261 4 \u2261 1. Both lead to a\u00b2 \u2261 1 mod 3, which is not 0 mod 3 \u2014 the negation of the conclusion.\n4. The contrapositive is linked to the original statement precisely. The conclusion is true, and the proof reflects that.\n5. No hidden premises are asserted, no generality is lost, and the argument is less than 10 lines.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the statement is indeed true, and the contrapositive method is the most efficient here; a direct proof would also work and is nearly identical."
+  },
+  {
+    "id": "MPQ-07",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "unsound",
+    "correct": true,
+    "error_type": "arithmetic: 4 mod 3 is 1, not 0; yields a wrong conclusion (disproof of a true statement)",
+    "critique": "<think>\n\n</think>\n\nVERDICT: unsound\n\nSTEP ANALYSIS:\n1. The proof method is stated correctly \u2014 contrapositive.\n2. The contrapositive of '3 divides a\u00b2 \u21d2 3 divides a' is '3 does not divide a \u21d2 3 does not divide a\u00b2'. The candidate's assumption matches.\n3. The inductive step fails. For a = 2 mod 3, a\u00b2 = 4 \u2261 1 mod 3, not 0. The candidate correctly computed this and correctly concluded that a\u00b2 is NOT divisible by 3 \u2014 which is what the contrapositive requires! The contradiction is valid.\n4. Step 5 misreads the contradiction as a counterexample. It is exactly the right thing: the case a = 2 mod 3 satisfies the antecedent (a not divisible by 3) and the negated consequent (a\u00b2 not divisible by 3), so the implication fails.\n5. The candidate's own counterexample is valid and not a single case. The statement is false, and the disproof is correct.\n\nSEVERITY: 1 \u2014 the only error is a mislabel of the contradiction as a 'counterexample', when it is the contradiction that disproves the implication. The logic is sound, the one misstep is terminological.\n\nREVISED ANSWER: none needed. Optional note: the true statement is '3 divides a \u21d4 3 divides a\u00b2', which the candidate's analysis of the two cases establishes directly."
+  },
+  {
+    "id": "LSQ-12",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly identifies the form of the argument and names the fallacy. The form is I-I-0, which is one of the invalid IAI-1 and OAO-2 patterns.\n2. Correctly applies the distribution rules. Particular affirmatives (I) distribute their predicate, so \"surgeons\" is undistributed in both premises. This calculation is accurate and follows from the I proposition's definition.\n3. Correctly applies the undistributed middle rule. The middle term must be distributed in at least one premise for the syllogism to link the premises' terms; this argument provides no such link.\n4. The counter-example is valid and meets the requirement: it satisfies both premises while making the conclusion false. The setup ensures the premises hold and the conclusion fails, which is the criterion for invalidity.\n5. Correctly rejects a valid form by naming the specific fallacy and providing a concrete counter-model rather than merely asserting invalidity.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the candidate could have tested the counter-model against the premises explicitly, which would have made the invalidity demonstration complete."
+  },
+  {
+    "id": "LSQ-12",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "unsound",
+    "correct": true,
+    "error_type": "chains two particular premises; two I premises never yield a valid syllogism (undistributed middle)",
+    "critique": "<think>\n\n</think>\n\nVERDICT: unsound\n\nSTEP ANALYSIS:\n1. Premise parsing is correct: both premises are indeed set-existence claims, and their overlap is described accurately.\n2. Failure mode: the candidate treats the middle term as a transitive bridge. \"Passing through surgeons\" carries the doctor group into the women group \u2014 this is the decisive error. Set overlap does not compose in this way: the doctors-surgeons overlap and the surgeons-women overlap do not, in general, imply a doctors-women overlap.\n3. Counter-example missing: a valid test is available in 2.3 lines and the candidate does not supply it. One would be easy to construct: doctors and surgeons could be disjoint \u2014 no doctors are surgeons \u2014 making the first premise false. A true counter-example is equally easy: surgeons and women could be disjoint (no surgeons are women), with many surgeons and many doctors, also making the conclusion false while both premises hold.\n4. Empirical endorsement is an independent defect. Whether the premises are true is irrelevant to validity; calling an invalid form \"sound\" because its premises are true inverts the entire analysis.\n5. Failure mode is failure of form: the argument is an invalid syllogism, and the candidate does not diagnose it as such. The error is not in the premises but in the inference drawn from them.\n\nSEVERITY: 5 \u2014 invalid form asserted as valid, with no mechanism to detect the failure even when premises are true.\n\nREVISED ANSWER: Invalid. Counter-example: doctors and surgeons are disjoint (no doctors are surgeons), so the first premise is false; this does not test the form, so try instead doctors = {D1, D2}, surgeons = {S1, S2}, women = {S2, W1}. Here surgeons and women overlap (S2), doctors and surgeons are disjoint (neither D1 nor D2 is a surgeon), and no doctor is a woman. Both premises hold, the conclusion fails, and the middle term is shared but does not connect the groups. The error is that set overlap does not compose across a shared term."
+  },
+  {
+    "id": "TRQ-05",
+    "variant": "clean-cosmetic",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. Correct \u2014 elapsed time 1.5 hours, distance 90 miles.\n2. Correct \u2014 remaining gap 180 miles.\n3. This is where it breaks. Relative speed when approaching is indeed sum of speeds, 150mph. That is valid physics, and the candidate states it correctly.\n4. Correct arithmetic: 180 / 150 = 1.2 hours.\n5. Correct conversion to 10:42. Valid.\n6. The final computation is stated as 'A has run...' but is never tied to the question 'how far from City A?'. It is a true statement, but it answers a different question: how far has A gone in total? The requested quantity is stationary, the remaining gap at time of meeting.\n7. Failure mode: true intermediate result asserted as final answer to a specific question. The candidate computed the correct position of A, but did not report it as the requested value, and no step connects the meeting time to the location.\n\nSEVERITY: 3 \u2014 the right answer is true and mostly correct. The error is a failure to bind a computed quantity to the question asked, not a mathematical mistake.\n\nREVISED ANSWER: 10:42AM, 270 - 162 = 108 miles from A. (The location is the remaining gap, which was the unclaimed quantity.)"
+  },
+  {
+    "id": "TRQ-05",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "ignores Train A's 90-mile head start; should use a 180-mile remaining gap",
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. Correct \u2014 relative speed is calculated correctly as 150 mph.\n2. This step is unmoored from the question. The 270-mile figure is the initial separation between the trains, not between the cities. The problem states \"Distance 270 miles\" without specifying which points, and this is the figure the candidate imported without checking the question's own framing. This is the central error: a number is taken from a problem's setup and reused in a way that does not answer the question asked.\n3. Correct \u2014 1.8 hours is accurately derived from the relative speed and the separation between the trains.\n4. Correct \u2014 arrival time at 11:18 AM is correctly computed, given that Train B departed at 9:30 AM.\n5. Correct \u2014 198 miles is the right distance Train A covers in 3.3 hours.\n\nSEVERITY: 3 \u2014 the answer is correct and the method is mostly sound, but the imported figure in step 2 is a clear misreading of the problem. If the 270 miles had been the separation between the trains at 9:30 AM, the work would be right. As stated, the figure does not describe the problem's setup.\n\nREVISED ANSWER: None needed. Optional note: the question's phrasing \u2014 \"Distance 270 miles\" \u2014 is ambiguous. If it means the separation between the cities, the meeting point is 198 miles from City A as computed. If it means the separation between the trains at 9:30 AM, the answer is different: in that case, the trains would have already passed each other before 9:30 AM, so the question would be ill-posed. The candidate correctly answered the version of the problem that was stated."
+  },
+  {
+    "id": "SRQ-05",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "<think>\n\n</think>\n\nVERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly states the die's opposite-face constraint and recalls the valid pairs. This is factual, not an inference.\n2. Deduces down=6 from top=1 via the constraint. Valid, direct inference.\n3. Deduces away=5 from front=2 via the same constraint. Valid, no hidden assumptions.\n4. Correctly identifies 3-4 as the remaining pair and assigns them to right-left. This inference is possible because the constraint leaves no other option \u2014 the sum 7 is unfulfilled by any other pairing with the used faces.\n5. Correctly uses the handedness of the die (right-handed) to assign 3 to the right. This is a standard property of the die's orientation, not a deduction from the constraints alone \u2014 it is an empirical fact about the standard die, not a conclusion drawn from the given information. The candidate notes it as such, which is appropriate.\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the right-handedness is a convention; left-handed dice exist and would swap 3 and 4."
+  },
+  {
+    "id": "SRQ-05",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "opposite faces sum to 7, not 6; every derived pairing is wrong",
+    "critique": "<think>\n\n</think>\n\nVERDICT: flawed\n\nSTEP ANALYSIS:\n1. The pair sums rule is stated correctly and applied correctly to find bottom (5), back (4), and the remaining pair (3-6).\n2. The assignment of 3 to the right face is asserted without support. This is the only step relying on spatial reasoning, and the candidate offers no method \u2014 no right-hand rule, no reference to a standard orientation, no deduction from earlier steps.\n3. The candidate does not name the 'away' or 'down' faces at all, instead of naming them in the conclusion. This is not an error in arithmetic, but in the final step of the problem.\n4. Failure mode: the orientation of the remaining pair is assumed rather than derived. From some die positions, 3 could be on left or right depending on how the die is rotated around the top-bottom axis.\n5. The answer is correct for this particular die orientation, which is not checked by any step.\n\nSEVERITY: 3 \u2014 the conclusion holds for this specific case, which is why it is correct. The defect is that the reasoning does not locate the unassigned pair's orientation \u2014 precisely what the question asks.\n\nREVISED ANSWER: Right 3, left 6, away 4, down 5. The orientation of the 3-6 pair is determined by applying the right-hand rule from the top face: with 1 up and 2 facing, 3 appears on the right, 6 on the left. This rule is only valid for this specific orientation and does not generalize."
+  }
+]

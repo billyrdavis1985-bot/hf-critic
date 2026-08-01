@@ -1,0 +1,74 @@
+[
+  {
+    "id": "MPQ-07",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly inverts the original claim: instead of a^2 \u00f7 3 = a \u00f7 3, the contrapositive asserts that if a^2 is not divisible by 3, then a is not divisible by 3. This is the correct logical relationship between the two statements.\n2. Establishes the base case correctly. 3 divides a only if a = 3, but a = 3 implies a^2 = 9, which is divisible by 3. The contrapositive therefore fails in this case, so the original claim is false when a = 3.\n3. The heart of the proof is correct modular arithmetic. a = 1 mod 3 means a = 1, 4, or 7; each squared gives 1 mod 3. a = 2 mod 3 means a = 2, 5, or 8; each squared gives 4 = 1 mod 3. These computations are accurate and the proof-by-contrapositive logic is applied correctly over them.\n4. No hidden assumptions, no overclaiming, appropriate epistemic calibration throughout.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the claim is false when a = 3, so the contrapositive is the correct negation."
+  },
+  {
+    "id": "MPQ-07",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "sound",
+    "correct": false,
+    "error_type": "arithmetic: 4 mod 3 is 1, not 0; yields a wrong conclusion (disproof of a true statement)",
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly chooses proof by contrapositive, which is the right tool for a divisibility claim.\n2. Correctly identifies the residue classes modulo 3: a = 1 mod 3 gives a^2 = 1 mod 3, and a = 2 mod 3 gives a^2 = 4 = 0 mod 3. Both cases are handled accurately.\n3. The counterexample in step 5 is selected correctly: a = 2 mod 3 has a^2 divisible by 3 while a itself is not, disproving the implication.\n4. No dropped premises, no overclaiming, conclusion follows directly from the construction.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional note: the argument generalizes to any divisibility claim with a power, since a^n is divisible by p if and only if a is divisible by p and n is divisible by the exponent of p in a's prime factorization."
+  },
+  {
+    "id": "LSQ-12",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "sound",
+    "correct": true,
+    "error_type": null,
+    "critique": "VERDICT: sound\n\nSTEP ANALYSIS:\n1. Correctly classifies both premises as particular affirmatives (I proposition) \u2014 valid.\n2. Accurately describes the undistributed middle: the middle term 'surgeons' is predicate in P1 and subject in P2, so neither distribution requires holds. \u2014 valid.\n3. Supplies a concrete counter-example demonstrating that the premises can be true and the conclusion false. This is the smoker's hole, the classic undistributed middle error. \u2014 valid.\n4. Explicitly names the fallacy and explains why the conclusion does not follow from the premises. \u2014 valid.\n\nSEVERITY: n/a \u2014 no flaws identified.\n\nREVISED ANSWER: none needed. Optional strengthening: naming the form (undistributed middle) would connect this instance to the general pattern, though the reasoning stands without it."
+  },
+  {
+    "id": "LSQ-12",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "unsound",
+    "correct": true,
+    "error_type": "chains two particular premises; two I premises never yield a valid syllogism (undistributed middle)",
+    "critique": "VERDICT: unsound\n\nSTEP ANALYSIS:\n1. The candidate's justification is an explicit statement of the undistributed middle fallacy. 'Surgeons' is treated as a mere linking term with no properties except those entailed by the premises \u2014 but the premises do not entail any property of the surgeons except that they are surgeons.\n2. The candidate asserts without proof that both premises are true as empirical statements. In a formal context this would require citation of a source; in an informal context it amounts to an appeal to common knowledge, which is never sufficient for a philosophical argument.\n3. Formally, the candidate's argument form is 'P1: Some A are B. P2: Some B are C. Therefore some A are C.' This is invalid because the middle term is undistributed. The surgeon set is not a superset of the woman set, so the overlap between surgeons and women does not locate any element of the doctor set.\n4. Counter-example: surgeons are defined as people who perform surgery, and the set of women is defined as people who are female. The set of doctors includes exactly one surgeon \u2014 Alice, who is also female. The set of women includes exactly one surgeon \u2014 Alice. The set of doctors is not a superset of the set of women, so the premises are true and the conclusion false.\n5. Failure mode: treating a linking term in a syllogism as a mere placeholder with no properties of its own. In traditional terms this is the undistributed middle fallacy, and it is only possible because the candidate does not specify what properties the middle term has.\n\nSEVERITY: 4 \u2014 the conclusion is false and the reasoning provides no way to evaluate it. In a formal context this argument would commit the undistributed middle fallacy; in an informal context it is only persuasive because the middle term is treated as a mere link rather than as a set with visible properties.\n\nREVISED ANSWER: Invalid. The premises leave open whether any doctors are women. The counter-model is a set of doctors containing exactly one surgeon \u2014 Alice \u2014 and a set of women containing exactly one surgeon \u2014 Alice. Both premises are true and the conclusion false."
+  },
+  {
+    "id": "TRQ-05",
+    "variant": "clean-cosmetic",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The arithmetic is correct, and the final answer is close to the mark \u2014 the actual meeting time is about 10:38, and the actual distance is 162 miles.\n2. The reasoning is not: the candidate assumes speed-up rather than time dilation. When two trains approach each other, the distance between them decreases at the relative speed, but time runs normally.\n3. This leads to the distance being systematically underestimated and the time slightly overestimated. The severity is 3 \u2014 the answer is within a few minutes and a few miles, but the mechanism is wrong.\n4. Failure mode: applying a linear model to a non-linear situation. The distance-over-time gradient changes when two trains meet, but the candidate's equation treats it as if the gradient were constant.\n\nSEVERITY: 3 \u2014 close, but the mechanism is wrong.\n\nREVISED ANSWER: About 10:38, 162 miles from A. The two trains meet when the remaining distance is no longer changing \u2014 that is, when 60 + 90 = 150 miles per hour, so 270 miles in 1.8 hours. A's position at that time is 8:00 + 1.8 \u00d7 0.5 = 10:38, leaving 270 \u2212 150 = 120 miles to go, which puts B 120 miles from A when the trains meet."
+  },
+  {
+    "id": "TRQ-05",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "ignores Train A's 90-mile head start; should use a 180-mile remaining gap",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The candidate correctly identifies the relative speeds of the trains and uses them to calculate the time it takes for the trains to meet. This is the correct method.\n2. The distance between the cities is stated accurately, and the time to closure is calculated correctly.\n3. The candidate's arithmetic is sound, and the answer to the first question is correct: the trains meet at 11:18 AM.\n4. The final answer, however, is not. The candidate assumes that the cars travel at the SUM of their speeds, which is only true if they are moving in the same direction. Since the problem states the destination is 270 miles away, the cars must be heading towards each other, so their combined speed is irrelevant \u2014 each car's individual speed determines the time it takes for them to close the gap.\n5. Failure mode: applying a numerical formula without checking whether its underlying assumptions hold in this particular case.\n\nSEVERITY: 3 \u2014 the answer is only 4 minutes early, and the reasoning would be correct for a different problem.\n\nREVISED ANSWER: They meet at 11:18 AM, 198 miles from City A. The final answer is correct, but the justification given in step 5 is not. The cars meet at a time determined by the distance between them and their individual speeds, not by the sum of their speeds. That sum is only relevant when the cars are moving in the same direction, which is not the case here."
+  },
+  {
+    "id": "SRQ-05",
+    "variant": "clean",
+    "label": "sound",
+    "emitted": "flawed",
+    "correct": false,
+    "error_type": null,
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The initial observation is correct \u2014 opposite faces sum to 7.\n2. The inference from 'top is 1' to 'bottom is 6' is justified because the 1-6 pair is the unique pair with 1 on one end.\n3. The same logic is applied to the 2-5 pair to identify the 'away' face as 5.\n4. The identification of the remaining pair as 3-4 is correct, but the assignment of right and left is incorrect.\n5. The final answer is correct only for a right-handed die. Inversion changes the 'right' and 'left' designations, so the same numbers do not necessarily occupy those positions on a left-handed die.\n\nSEVERITY: 3 \u2014 no underlying mathematical error, but the answer is only partially correct and the reasoning could be clarified.\n\nREVISED ANSWER:\nRight 3, left 4, away 5, down 6 \u2014 but only for a right-handed die. Inversion reverses 'right' and 'left'."
+  },
+  {
+    "id": "SRQ-05",
+    "variant": "corrupted",
+    "label": "flawed",
+    "emitted": "flawed",
+    "correct": true,
+    "error_type": "opposite faces sum to 7, not 6; every derived pairing is wrong",
+    "critique": "VERDICT: flawed\n\nSTEP ANALYSIS:\n1. The initial observation is correct \u2014 opposite faces sum to 6.\n2. The assignment of top and bottom is correct: 1 and 5.\n3. The assignment of front and back is also correct: 2 and 4.\n4. The assignment of right and left is only partially correct. The candidate correctly places 3 on the right, but then assigns 6 to the left rather than completing the second pair (4 and 5).\n5. The final answer is incorrect: away should be 4 and down should be 5.\n\nSEVERITY: 3 \u2014 no underlying principles are at risk, but the answer is wrong and the methodology produced it.\n\nREVISED ANSWER: Right 3, left 5, away 4, down 6. The right and left faces are a mirror image of the top and bottom; the away and down directions are reversed on the other two faces."
+  }
+]
