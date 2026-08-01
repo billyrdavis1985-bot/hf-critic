@@ -1,4 +1,4 @@
-# Verdict-string scoring inflates measured critic capability
+# Verdict-string scoring can inflate measured critic capability: a controlled-corruption case study
 
 *Draft. Billy R. Davis Jr., Hudson Forge Technologies / IRMB.*
 
@@ -10,9 +10,10 @@ it, and in both cases overstated it substantially. The first was a lexical
 overlap score used as a trap-detection rate. The second appeared in a harness
 built specifically to avoid that failure: scoring a critic on the verdict token
 it emits rather than on whether its analysis identifies the injected error.
-Hand verification of 16 corrupted items put diagnosis-verified recall at
-0.55-0.69 against a verdict-string recall of 1.00. The gap, not the absolute
-figure, is the result.
+Hand verification of all 16 corrupted items put diagnosis-verified recall at
+0.63 against a verdict-string recall of 1.00. The magnitude is specific to these
+models and these constructed errors; the demonstration that the two scorings can
+diverge this far is the transferable result.
 
 ## 1. Two proxy failures
 
@@ -66,9 +67,12 @@ the correct answer through invalid reasoning. Several items here were built
 specifically to exercise that case.
 
 Questions were drawn from a 160-question pool disjoint from the reserved
-evaluation holdout. Contamination checks confirmed the training corpus never
-reads the question dataset and that no training example references a question by
-identifier; an 8-word text-overlap scan excluded one further question.
+evaluation holdout. Three contamination checks were run: the corpus preparation
+script does not open the question dataset, no hand-written training example
+references a question by identifier, and an 8-word text-overlap scan against
+those examples excluded one further question. These do not rule out paraphrased
+overlap, and the roughly 7,900 externally sourced training rows were not
+inspected for shared provenance.
 
 Five batches, n=34: 16 corrupted, 18 clean. All runs used greedy decoding,
 verified bit-identical across repeated runs before the study began.
@@ -108,11 +112,14 @@ Verdict-string scoring gave the stronger critic a corrupted-item recall of
 16/16. Each item was then read against its injected error and classified as
 genuine, spurious, or partial.
 
-Of the 11 items read in full: 6 genuine, 3 spurious, 2 partial or broken.
-Diagnosis-verified recall is 6/11 = 0.55. Treating the 5 remaining items as
-genuine on the basis of a lighter screen gives a best case of 11/16 = 0.69.
+All 16 were read: 10 genuine, 4 spurious, 2 partial or broken.
+Diagnosis-verified recall is 10/16 = 0.63.
 
-Three spurious cases illustrate the mechanism.
+Three of the four spurious cases share a shape: the critic affirms a false
+general rule stated by the candidate, then checks the candidate's arithmetic
+against that rule rather than checking the rule. This is an observation from the
+audit rather than a tested hypothesis, and it is offered as a direction, not a
+finding.
 
 **A fabricated classification, affirmed.** A candidate labelled a syllogism as
 mood AII in the third figure, naming it Datisi, and concluded validity. The
@@ -151,8 +158,10 @@ the wrong content.
 
 This has a practical consequence for deployment. A verification gate that scores
 its critic on the verdict field will count agreement-with-the-error as a
-successful catch. The failure is silent and produces confident approval, which
-is worse in a pipeline than no critic at all.
+successful catch. No downstream pipeline outcomes were measured here, so the
+argument is about detectability rather than net harm: a spurious catch produces
+an approval carrying the authority of a check that did not occur, and it will
+not appear in the gate's own metrics.
 
 The open problem is what to score instead. Hand verification is valid and does
 not scale. Automatic alternatives -- matching the revised answer against a

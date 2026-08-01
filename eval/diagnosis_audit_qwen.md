@@ -13,26 +13,31 @@ Verdict-word recall was 16/16. Hand verification gives a different picture.
 | b2 | TRQ-03 corrupted | unsound | 4 | genuine |
 | b2 | LSQ-03 corrupted | flawed | 3 | **spurious** |
 | b2 | TRQ-01 corrupted | flawed | 3 | **partial** |
-| b3 | MPQ-03 corrupted-asserted | flawed | 4 | not fully read (screen only) |
-| b3 | MPQ-03 corrupted-shown | flawed | 3 | not fully read (screen only) |
-| b3 | MPQ-04 corrupted-asserted | flawed | 3 | not fully read (screen only) |
+| b3 | MPQ-03 corrupted-asserted | flawed | 4 | genuine |
+| b3 | MPQ-03 corrupted-shown | flawed | 3 | genuine |
+| b3 | MPQ-04 corrupted-asserted | flawed | 3 | genuine |
 | b3 | MPQ-04 corrupted-shown | flawed | 3 | genuine (muddled sub-point on the n=3 test) |
 | b3 | SRQ-03 corrupted-asserted | flawed | 3 | **broken** (directionally wrong) |
 | b3 | SRQ-03 corrupted-shown | flawed | 3 | genuine diagnosis, broken revision |
 | b5 | MPQ-07 corrupted | unsound | 1 | **spurious** |
-| b5 | LSQ-12 corrupted | unsound | 5 | not fully read (screen only) |
+| b5 | LSQ-12 corrupted | unsound | 5 | genuine (both counter-examples broken) |
 | b5 | TRQ-05 corrupted | flawed | 3 | **spurious** |
-| b5 | SRQ-05 corrupted | flawed | 3 | not fully read (screen only) |
+| b5 | SRQ-05 corrupted | flawed | 3 | **spurious** |
 
 ## Tally
 
-Of the 11 items read in full: 6 genuine, 3 spurious, 2 partial/broken.
-Diagnosis-verified recall = 6/11 = 0.55. Treating the 5 screen-only items as
-genuine gives a best case of 11/16 = 0.69.
+All 16 items were read in full: 10 genuine, 4 spurious, 2 partial/broken.
+Diagnosis-verified recall = 10/16 = 0.63, against a verdict-string recall of
+16/16 = 1.00. Verdict-string scoring overstates capability by roughly 37 points.
 
-Verdict-word recall (16/16 = 1.00) overstates capability by 30-45 points.
+Three of the four spurious cases share a shape: the critic affirms a false
+general rule stated by the candidate (that this syllogism's mood is Datisi and
+valid; that opposite die faces sum to 6; that 4 mod 3 = 0 was "computed
+correctly"), then checks the candidate's arithmetic against that rule rather
+than checking the rule. This is an observation from the audit, not a tested
+hypothesis.
 
-## The three spurious cases
+## The four spurious cases
 
 **b2 LSQ-03.** The candidate asserted a fabricated form classification: mood AII
 in the third figure, named Datisi. tuned-Qwen affirmed it -- "AII in the third
@@ -76,3 +81,9 @@ that correlates with the target property without measuring it. It appeared here
 in a harness built specifically to avoid that class of mistake.
 
 tuned-Mistral's numbers were not audited and carry the same inflation.
+
+**SRQ-05.** The candidate asserted that opposite faces of a die sum to 6 rather
+than 7, making every derived pairing wrong. The critic wrote "The pair sums rule
+is stated correctly and applied correctly", accepted the derived assignments,
+objected only that the right/left orientation was unsupported, and concluded the
+answer is correct for the given position.
