@@ -256,6 +256,10 @@ Prediction recorded before running:
 
 ## Study: other-critique on external reasoning (batches 1-4, n=26)
 
+> SUPERSEDED. The severity-gating conclusion below was falsified out-of-sample in
+> batch 5, and the recall figures are verdict-string counts that a later diagnosis
+> audit showed to be inflated. See "Revised results" at the end of this file.
+
 ### Motivation
 
 The published evaluation is a self-critique probe: the holdout stores no
@@ -387,3 +391,75 @@ the rule breaks regardless of the other seven.
 
 Secondary: tuned-Mistral is predicted to remain below 0.6 recall at any
 threshold, consistent with batches 1-4.
+
+## Revised results: batches 1-5 (n=34) and the diagnosis audit
+
+This section supersedes the batch 1-4 study above on two points: severity gating
+and the recall figures.
+
+### Severity gating failed out-of-sample
+
+The rule (flag when SEVERITY >= 3, ignore the VERDICT word) was found post hoc
+on batches 1-4, where it looked free: recall 12/12, specificity 13/14. Batch 5
+pre-registered the criterion recall >= 3/4 AND specificity 4/4. Result: 3/4 and
+3/4. Two items show why.
+
+- TRQ-05-clean-cosmetic, arithmetically correct but stripped of units and AM/PM
+  markers, scored SEVERITY 3. It is the exact case the rule existed to pass.
+- MPQ-07-corrupted, where the candidate concludes a true statement is false off
+  a 4 mod 3 = 0 error, scored SEVERITY 1.
+
+Severity is miscalibrated in both directions. Cumulatively, verdict-word scoring
+gives 31/34 and severity>=3 gives 31/34: the rule trades one false alarm for one
+miss. The post-hoc finding did not generalise.
+
+### Verdict-string recall overstates capability by 30-45 points
+
+All 16 tuned-Qwen corrupted items were audited by hand against the injected
+error (eval/diagnosis_audit_qwen.md). Of the 11 read in full: 6 genuine
+diagnoses, 3 spurious, 2 partial or broken. Diagnosis-verified recall is
+6/11 = 0.55; treating the 5 screen-only items as genuine gives a best case of
+11/16 = 0.69. Verdict-word recall was 16/16.
+
+A spurious case emits a non-endorsing verdict while the analysis certifies the
+flawed content. On LSQ-03 the critic affirmed a fabricated mood classification
+("AII in the third figure is Datisi ... Valid") and declared the argument form
+valid -- the middle term is predicate of premise 1 and subject of premise 2,
+making it first figure, mood IAI-1, invalid. It emitted VERDICT: flawed on an
+unrelated objection to the soundness wording.
+
+SRQ-03 appears twice with an identical injected error and received contradictory
+diagnoses: the "shown" variant identified the omitted ceiling correctly, the
+"asserted" variant claimed a shorter path exists and produced fabricated
+distances. Same model, same flaw, opposite readings.
+
+tuned-Mistral was not audited and carries the same inflation.
+
+### What this means
+
+Verdict-string scoring is a proxy metric: it correlates with critic capability
+without measuring it. This is the same failure as trap_detection_rate's lexical
+overlap, arriving independently in a harness built to avoid that class of
+mistake. Any future scoring of these critics should verify the diagnosis, not
+the verdict field -- which currently means hand verification, since no automatic
+proxy for "named the injected error" has been validated.
+
+### Standing on the model comparison
+
+tuned-Mistral remains unsuitable as a verification gate, but that rests on the
+aggregate rather than any single batch: 5/12 recall across batches 1-4, then 3/4
+on batch 5. It also confabulates in both directions, inventing technical content
+both to endorse flawed reasoning and to reject valid reasoning.
+
+tuned-Qwen is stronger but not gate-ready on this evidence. Its diagnosis-
+verified recall is 0.55-0.69, it has a confirmed false alarm with a fabricated
+justification (TRQ-05-clean), and it produced contradictory diagnoses of the
+same injected error.
+
+### Limitations
+
+n=34, errors hand-constructed, candidate traces authored by an LLM and verified
+by the author with one label error found and disclosed (MPQ-03-terse). Questions
+appear in multiple items, so items are not independent. One model pair. Mechanism
+of failure unknown: two pre-registered hypotheses were falsified and no third is
+offered from the same evidence.
