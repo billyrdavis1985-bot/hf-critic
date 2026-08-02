@@ -145,8 +145,24 @@ received contradictory diagnoses from the same model. One variant identified the
 omitted surface correctly; the other claimed a shorter path existed and produced
 fabricated distances.
 
-The weaker critic was not audited and its figures carry the same inflation. Its
-verdict-string numbers were recall 8/16 and specificity 11/18.
+The weaker critic was audited on the same basis. Eight of its sixteen corrupted
+items were outright misses; of the remaining eight, five were spurious, one
+partial, and two genuine. Its diagnosis-verified recall is 2/16 = 0.13 against a
+verdict-string figure of 8/16 = 0.50.
+
+| | verdict-string | diagnosis-verified | inflation |
+|---|---|---|---|
+| stronger critic | 1.00 | 0.63 | 1.6x |
+| weaker critic | 0.50 | 0.13 | 3.8x |
+
+The inflation is larger for the weaker model. Verdict-string scoring therefore
+does not merely add noise to a capability estimate: it compresses the measured
+distance between a critic that mostly works and one that mostly does not, which
+is precisely the distinction a deployment decision turns on.
+
+One item drew the same spurious response from both critics: each affirmed a
+fabricated syllogistic classification supplied by the candidate. This is a single
+item and is recorded as an observation rather than a finding.
 
 ## 6. Discussion
 
