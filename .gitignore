@@ -26,3 +26,7 @@ HF_IQR_Master_Dataset_v2.json
 unsloth_compiled_cache/
 *.bak
 *.bak
+
+# Path A (deprioritized): manual sound-verdict grading
+eval/labels_sound_*.json
+eval/review_sound_*.md
