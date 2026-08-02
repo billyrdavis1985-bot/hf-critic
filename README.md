@@ -102,7 +102,7 @@ python eval_critic.py --compare <tag_a> <tag_b>
 
 # 5. export for serving
 python export_gguf.py --model outputs/<run>/final --out outputs/<run>/gguf
-ollama create critic -f Modelfile && ollama run critic
+ollama create critic -f Modelfile.qwen && ollama run critic
 ```
 
 The train and eval scripts are model-agnostic via `--chat-template` (`qwen3`,
