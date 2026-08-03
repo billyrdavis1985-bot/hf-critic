@@ -233,11 +233,20 @@ failed; the failures are kept in `experiments.md` rather than removed.
 
 ## Related IRMB repositories
 
+
+
 The reasoning benchmark used here as a held-out eval instrument:
 
 - [HF-IQR V1](https://github.com/billyrdavis1985-bot/-IRMB_HF-IQR_ReasoningBenchmark)
 - [HF-IQR V2](https://github.com/billyrdavis1985-bot/HF-IQR-V2-Hudson-Forge-Intelligence-and-Reasoning-Benchmark)
 - [HF-IQR V3](https://github.com/billyrdavis1985-bot/HF-IQR-V3)
+
+**[aprender](https://github.com/paiml/aprender)** (Noah Gift / Pragmatic AI Labs)
+— the pure-Rust ML framework whose BeatBenchmark contract system enforces this
+repository's CI gate. Fork:
+[billyrdavis1985-bot/aprender](https://github.com/billyrdavis1985-bot/aprender).
+A Blackwell (sm_120) reproduction of the QLoRA finetune hang was contributed
+upstream on [issue #563](https://github.com/paiml/aprender/issues/563).
 
 ## Citation
 
