@@ -178,6 +178,10 @@ The repository looks different than it did before the gate went in.
   every candidate set, every run output, and the pre-registration log with its
   four falsified predictions are committed. Each classification is verifiable
   against the saved critique text.
+- **A scope limit stated plainly.** Every figure here describes the HF
+  safetensors models. What actually serves through Ollama is a 4-bit GGUF
+  conversion, and no comparison between the two has been run — quantization
+  effects on reasoning critique are ungated.
 - **Deployment posture changed.** Neither critic is currently a verification
   gate for downstream agent work. The stronger one is a plausible flag-raiser at
   0.63 verified recall; the weaker one is not usable in that role.
