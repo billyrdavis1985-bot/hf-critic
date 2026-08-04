@@ -36,7 +36,7 @@ Diagnosis-verified recall = 2/16 = 0.13, against a verdict-string recall of
 | | verdict-string | diagnosis-verified | inflation factor |
 |---|---|---|---|
 | tuned-Qwen | 16/16 = 1.00 | 10/16 = 0.63 | 1.6x |
-| tuned-Mistral | 8/16 = 0.50 | 2/16 = 0.13 | 3.8x |
+| tuned-Mistral | 8/16 = 0.50 | 2/16 = 0.13 | 4.0x |
 
 The inflation is larger for the weaker model. Verdict-string scoring therefore
 does not merely add noise: it compresses the measured distance between a critic

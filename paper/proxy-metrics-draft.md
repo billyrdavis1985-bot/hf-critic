@@ -153,7 +153,7 @@ verdict-string figure of 8/16 = 0.50.
 | | verdict-string | diagnosis-verified | inflation |
 |---|---|---|---|
 | stronger critic | 1.00 | 0.63 | 1.6x |
-| weaker critic | 0.50 | 0.13 | 3.8x |
+| weaker critic | 0.50 | 0.13 | 4.0x |
 
 The inflation is larger for the weaker model. Verdict-string scoring therefore
 does not merely add noise to a capability estimate: it compresses the measured
